@@ -1,11 +1,11 @@
 # Compiler and Flags
 CC = gcc
-CFLAGS = -I ../include
-LDFLAGS = -L ../lib/ -lraylib -lgdi32 -lwinmm
+CFLAGS = -I include
+LDFLAGS = -L lib/ -lraylib -lgdi32 -lwinmm
 
 # Output file
-OUT = ..\game.exe
-SRC = main.cc
+OUT = game.exe
+SRC = src/main.cc
 
 # Default target
 all: $(OUT)
