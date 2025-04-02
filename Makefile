@@ -1,19 +1,17 @@
-# Compiler and Flags
-CC = gcc
-CFLAGS = -I include
-LDFLAGS = -L lib/ -lraylib -lgdi32 -lwinmm
-
 # Output file
-OUT = game.exe
-SRC = src/main.cc
+SRC = src/main.cc src/ghost.cc src/pacman.cc src/game.cc src/pellet.cc src/scoreboard.cc src/sprite.cc src/wall.cc
+OBJ = src/main.o src/ghost.o src/pacman.o src/game.o src/pellet.o src/scoreboard.o src/sprite.o src/wall.o
 
 # Default target
-all: $(OUT)
+all: game.exe
 
 # Compile the program
-$(OUT): $(SRC)
-	$(CC) -o $(OUT) $(SRC) $(CFLAGS) $(LDFLAGS)
+game.exe: $(OBJ)
+	g++ -o game.exe $(OBJ) -L lib/ -lraylib -lgdi32 -lwinmm
+
+src/%.o: src/%.cc
+	g++ -I include -c -o $@ $<
 
 # Clean compiled files
 clean:
-	del /f /q $(OUT)
+	del /f /q game.exe

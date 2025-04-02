@@ -4,8 +4,11 @@
 class Sprite
 {
     public:
+        Sprite();
+        ~Sprite();
         void draw();
         void update();
+        
     private:
         int texture;
         int position;

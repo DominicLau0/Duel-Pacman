@@ -6,10 +6,14 @@
 class Pacman : public Sprite
 {
     public:
+        Pacman();
+        ~Pacman();
         void input();
+        int getStartPoint();
 
     private:
         int id;
+        int start_point;
 };
 
 #endif

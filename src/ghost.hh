@@ -6,7 +6,8 @@
 class Ghost : public Sprite
 {
     public:
-
+        Ghost();
+        ~Ghost();
     private:
         int id;
 };

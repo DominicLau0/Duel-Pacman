@@ -1,4 +1,4 @@
-#include "game.cc"
+#include "game.hh"
 
 int main(){
     Game game;

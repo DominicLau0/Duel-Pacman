@@ -1,24 +1,25 @@
 #include "game.hh"
 #include <iostream>
-#include "pacman.cc"
-#include "pellet.cc"
 
 Game::Game(){
     map = {
-        "1111111111111111111",
-        "1010000000000000001",
-        "1010000000001111111",
-        "1000000000000000111",
-        "1000000200000000011",
-        "1000000000000100001",
-        "1000000000000100001",
-        "1001100000000100001",
-        "1001100000000100001",
-        "1001100000000100001",
-        "1111111111111111111"
+        "2111111111111111112",
+        "2020000000000000002",
+        "2020000000001111112",
+        "2000000000000000112",
+        "2000000200000000012",
+        "2000000000000100002",
+        "2000000000000100002",
+        "2002200000000100002",
+        "2002200000000100002",
+        "2002200000000100002",
+        "2111111111111111111"
     };
 
-    block_size = 100;
+    block_size = 50;
+    radius = 5;
+
+    create_map();
 }
 
 Game::~Game(){
@@ -46,14 +47,25 @@ void Game::create_map(){
             float x = column * block_size;
             float y = row * block_size;
 
-            if(tile == '1'){
-                wall.push_back(Rectangle(x, y, block_size, block_size));
+            if(tile == '0'){
+                pellets.push_back(Pellet(x, y, false));
+
+                pacman_last_position.first = x;
+                pacman_last_position.second = y;
+            }
+            else if(tile == '1'){
+                walls.push_back(Wall{x, y, block_size}); //TODO: Need to modify this to accept block size of certain length and width
 
             }else if(tile == '2'){
-                wall.push_back(Rectangle(x, y, block_size, block_size));
+                walls.push_back(Wall{x, y, block_size});
 
-            }else if(tile != '0'){
+            }else{
                 std::cout << "Cannot be processed." << std::endl;
+            }
+
+            if(pacman_first_position.first == -1) {
+                pacman_first_position.first = x;
+                pacman_first_position.second = y;
             }
         }
     }
@@ -65,20 +77,33 @@ void Game::run(){
     const int screenHeight = 450;
 
     SetTargetFPS(60);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "Hello Raylib");
-
-    // Initialize objects
-    Pacman pacman = Pacman();
-    Pellet pallets = Pellet();
 
     while(!WindowShouldClose())
     {
         float dt = GetFrameTime();
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
 
-        DrawText("It works!", 20, 20, 20, BLACK);
+        for(Wall& wall: walls){
+            Rectangle rectangle = Rectangle{wall.getX(), wall.getY(), block_size, block_size};
+
+            if(wall.getX() < (map.size()/2) * block_size){
+                DrawRectangleRoundedLines(rectangle, 0.3, 2, BLUE);
+            }else{
+                DrawRectangleRoundedLines(rectangle, 0.3, 2, RED);
+            }
+        }
+
+        for(Pellet& pellet: pellets){
+            if(pacman_last_position == std::make_pair(pellet.getX() - (50/2), pellet.getY() - (50/2))){
+                DrawRectangle(pellet.getX(), pellet.getY(), block_size, block_size, RED);
+            }else{
+                DrawCircle(pellet.getX(), pellet.getY(), radius, YELLOW);
+            }
+        }
         
         EndDrawing();
     }
