@@ -6,6 +6,7 @@
 class Pacman : public Sprite
 {
     public:
+        void input();
 
     private:
         int id;

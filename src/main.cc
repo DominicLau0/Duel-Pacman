@@ -1,32 +1,8 @@
-#include "../include/raylib.h"
-#include "pacman.cc"
-#include "pellet.cc"
+#include "game.cc"
 
 int main(){
-    // Initialize display
-    const int screenWidth = 800;
-    const int screenHeight = 450;
-    
-    SetTargetFPS(60);
-    InitWindow(screenWidth, screenHeight, "Hello Raylib");
-
-    // Initialize objects
-    Pacman pacman = Pacman();
-    Pellet pallets = Pellet();
-    
-    while(!WindowShouldClose())
-    {
-        float dt = GetFrameTime();
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-
-        DrawText("It works!", 20, 20, 20, BLACK);
-        
-        EndDrawing();
-    }
-
-    CloseWindow();
+    Game game;
+    game.run();
 
     return 0;
 }
