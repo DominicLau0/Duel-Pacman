@@ -1,10 +1,12 @@
 #ifndef PACMAN_HH
 #define PACMAN_HH
 
-class Pacman
+#include "sprite.hh"
+
+class Pacman : public Sprite
 {
     public:
-        void draw();
+
     private:
         int id;
 };

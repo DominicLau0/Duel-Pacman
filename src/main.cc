@@ -16,9 +16,13 @@ int main(){
     
     while(!WindowShouldClose())
     {
+        float dt = GetFrameTime();
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
+
         DrawText("It works!", 20, 20, 20, BLACK);
+        
         EndDrawing();
     }
 

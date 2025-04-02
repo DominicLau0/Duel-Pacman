@@ -1,7 +1,9 @@
 #ifndef PELLET_HH
 #define PELLET_HH
 
-class Pellet
+#include "sprite.hh"
+
+class Pellet : public Sprite
 {
     public:
 

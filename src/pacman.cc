@@ -5,7 +5,3 @@ Pacman::Pacman(){
 
 Pacman::~Pacman(){
 }
-
-void Pacman::draw(){
-    
-}
