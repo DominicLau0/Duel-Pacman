@@ -2,18 +2,29 @@
 #define PACMAN_HH
 
 #include "sprite.hh"
+#include "../include/raylib.h"
 
-class Pacman : public Sprite
+#include <vector>
+
+class Pacman
 {
     public:
         Pacman();
+        Pacman(float, float);
         ~Pacman();
         void input();
-        int getStartPoint();
+        void draw();
+        Vector2 getStartPoint();
+        void setStartPoint(Vector2);
 
     private:
+        static int id_counter;
+
         int id;
-        int start_point;
+        Vector2 center = {50, 50};
+        float x = 0;
+        float y = 0;
+        Vector2 start_point;
 };
 
 #endif
