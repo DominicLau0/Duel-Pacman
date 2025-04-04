@@ -13,13 +13,19 @@ Game::Game(){
         "2   1      1                1",
         "2   11111111    1111        1",
         "2               1           2",
-        "211111111111111111111111111111"
+        "21111111111111111111111111111"
     };
 
-    block_size = 50;
-    radius = 5;
+    block_size = 25;
+    radius = 2;
 
     create_map();
+
+    pacmans[0].setStartPoint(pacman_first_position);
+    pacmans[1].setStartPoint(pacman_last_position);
+
+    pacmans[0].setColor(BLUE);
+    pacmans[1].setColor(RED);
 }
 
 Game::~Game(){
@@ -50,12 +56,12 @@ void Game::create_map(){
             if(tile == ' '){
                 pellets.push_back(Pellet(x, y, false));
 
-                pacman_last_position.first = x;
-                pacman_last_position.second = y;
+                pacman_last_position.x = x;
+                pacman_last_position.y = y;
 
-                if(pacman_first_position.first == -1) {
-                    pacman_first_position.first = x;
-                    pacman_first_position.second = y;
+                if(pacman_first_position.x == -1) {
+                    pacman_first_position.x = x;
+                    pacman_first_position.y = y;
                 }
             }
             else if(tile == '1'){
@@ -104,13 +110,16 @@ void Game::draw_walls(){
             }
         }
     }
-
 }
 
 void Game::draw_pellets(){
     for(Pellet& pellet: pellets){
         DrawCircle(pellet.getX(), pellet.getY(), radius, YELLOW);
     }
+}
+
+void Game::collision(std::string axis){
+    
 }
 
 void Game::run(){
@@ -124,8 +133,6 @@ void Game::run(){
 
     while(!WindowShouldClose())
     {
-        float dt = GetFrameTime();
-
         BeginDrawing();
         ClearBackground(BLACK);
 
@@ -133,18 +140,20 @@ void Game::run(){
         draw_walls();
         draw_pellets();
 
-        Vector2 blue_pacman_direction = Vector2();
-        Vector2 red_pacman_direction = Vector2();
+        Vector2 blue_pacman_direction = Vector2{float(IsKeyDown(KEY_RIGHT)) - float(IsKeyDown(KEY_LEFT)),
+                                                float(IsKeyDown(KEY_DOWN)) - float(IsKeyDown(KEY_UP))};
+        Vector2 red_pacman_direction = Vector2{float(IsKeyDown(KEY_D)) - float(IsKeyDown(KEY_A)),
+                                                float(IsKeyDown(KEY_S)) - float(IsKeyDown(KEY_W))};
 
-        blue_pacman_direction.x = int(IsKeyDown(KEY_RIGHT)) - int(IsKeyDown(KEY_LEFT));
-        blue_pacman_direction.y = int(IsKeyDown(KEY_DOWN)) - int(IsKeyDown(KEY_UP));
-
-        red_pacman_direction.x = int(IsKeyDown(KEY_D)) - int(IsKeyDown(KEY_A));
-        red_pacman_direction.y = int(IsKeyDown(KEY_S)) - int(IsKeyDown(KEY_W));
+        pacmans[0].setDirection(blue_pacman_direction);
+        pacmans[1].setDirection(red_pacman_direction);
 
         //Draw pacman
+        float dt = GetFrameTime();
+
         for(Pacman& pacman: pacmans){
             pacman.draw();
+            pacman.update(dt);
         }
         
         EndDrawing();

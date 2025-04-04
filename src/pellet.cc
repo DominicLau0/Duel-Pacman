@@ -14,9 +14,9 @@ Pellet::~Pellet(){
 }
 
 int Pellet::getX(){
-    return x + (50/2);
+    return x + (25/2);
 }
 
 int Pellet::getY(){
-    return y + (50/2);
+    return y + (25/2);
 }

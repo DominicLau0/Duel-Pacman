@@ -19,6 +19,8 @@ class Game
         void draw_walls();
         void draw_pellets();
 
+        void collision(std::string);
+
     private:
         Pacman pacmans[2];
 
@@ -29,8 +31,8 @@ class Game
         float block_size = 0;
         float radius = 5;
 
-        std::pair<float, float> pacman_first_position{-1, -1};
-        std::pair<float, float> pacman_last_position{-1, -1};
+        Vector2 pacman_first_position{-1, -1};
+        Vector2 pacman_last_position{-1, -1};
 };
 
 #endif

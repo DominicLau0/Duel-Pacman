@@ -14,8 +14,11 @@ class Pacman
         ~Pacman();
         void input();
         void draw();
+        void update(float);
         Vector2 getStartPoint();
         void setStartPoint(Vector2);
+        void setDirection(Vector2);
+        void setColor(Color);
 
     private:
         static int id_counter;
@@ -25,6 +28,9 @@ class Pacman
         float x = 0;
         float y = 0;
         Vector2 start_point;
+        int speed = 500;
+        Vector2 direction;
+        Color color;
 };
 
 #endif
