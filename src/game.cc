@@ -4,16 +4,16 @@
 Game::Game(){
     map = {
         "11111111111111111111111111111",
-        "2                           1",
-        "2   111111111         11  111",
-        "2   1                 1     1",
-        "2   1     1           1     1",
-        "2         111  111          1",
-        "2   1            1          1",
-        "2   1      1                1",
-        "2   11111111    1111        1",
-        "2               1           2",
-        "21111111111111111111111111111"
+        "1                           1",
+        "1   111111111         11  111",
+        "1   1                 1     1",
+        "1   1     1           1     1",
+        "1         111  111          1",
+        "1   1            1    1111  1",
+        "1   1      1                1",
+        "1   11111111    1111     1  1",
+        "1               1        1  1",
+        "11111111111111111111111111111"
     };
 
     block_size = 25;
@@ -37,8 +37,7 @@ void Game::create_map(){
      * Creates the layout of the pacman game.
      * 
      * '0' represents no wall.
-     * '1' represents a horizontal wall
-     * '2' represents a vertical wall
+     * '1' represents a wall.
      * 
      * Stores the created walls in the vector wall.
      * 
@@ -65,10 +64,31 @@ void Game::create_map(){
                 }
             }
             else if(tile == '1'){
-                walls.push_back(Wall{x, y, block_size}); //TODO: Need to modify this to accept block size of certain length and width
-
-            }else if(tile == '2'){
-                walls.push_back(Wall{x, y, block_size});
+                if(map[row][column] != ' '){
+                    float x = column * block_size;
+                    float y = row * block_size;
+    
+                    // Choose a color based on horizontal position.
+                    Color color = (x < ((int)map[row].size()/2 * block_size)) ? BLUE : RED;
+    
+                    // For each side, check if the neighboring cell is not a wall.
+                    // Left side: if at left edge or left neighbor is empty.
+                    if(column == 0 || map[row][column-1] == ' '){
+                        walls.push_back(Wall(Vector2 {x, y}, Vector2 {x, y + block_size}, color));
+                    }
+                    // Right side: if at right edge or right neighbor is empty.
+                    if(column == map[row].size()-1 || map[row][column+1] == ' '){
+                        walls.push_back(Wall(Vector2 {x + block_size, y}, Vector2 {x + block_size, y + block_size}, color));
+                    }
+                    // Top side: if at top edge or the above neighbor is empty.
+                    if(row == 0 || map[row-1][column] == ' '){
+                        walls.push_back(Wall(Vector2 {x, y}, Vector2 {x + block_size, y}, color));
+                    }
+                    // Bottom side: if at bottom edge or the below neighbor is empty.
+                    if(row == map.size()-1 || map[row+1][column] == ' '){
+                        walls.push_back(Wall(Vector2 {x, y + block_size}, Vector2 {x + block_size, y + block_size}, color));
+                    }
+                }
 
             }else{
                 std::cout << "Cannot be processed." << std::endl;
@@ -79,47 +99,24 @@ void Game::create_map(){
 
 void Game::draw_walls(){
     // Iterate through each cell in the map
-    for (int row = 0; row < map.size(); row++){
-        for (int col = 0; col < map[row].size(); col++){
-            // Check if the cell represents a wall (any non-space character)
-            if(map[row][col] != ' '){
-                float x = col * block_size;
-                float y = row * block_size;
-
-                // Choose a color based on horizontal position.
-                // (You can adjust this logic if needed.)
-                Color color = (x < ((int)map[row].size()/2 * block_size)) ? BLUE : RED;
-
-                // For each side, check if the neighboring cell is not a wall.
-                // Left side: if at left edge or left neighbor is empty.
-                if(col == 0 || map[row][col-1] == ' '){
-                    DrawLineEx(Vector2 {x, y}, Vector2 {x, y + block_size}, 2, color);
-                }
-                // Right side: if at right edge or right neighbor is empty.
-                if(col == map[row].size()-1 || map[row][col+1] == ' '){
-                    DrawLineEx(Vector2 {x + block_size, y}, Vector2 {x + block_size, y + block_size}, 2, color);
-                }
-                // Top side: if at top edge or the above neighbor is empty.
-                if(row == 0 || map[row-1][col] == ' '){
-                    DrawLineEx(Vector2 {x, y}, Vector2 {x + block_size, y}, 2, color);
-                }
-                // Bottom side: if at bottom edge or the below neighbor is empty.
-                if(row == map.size()-1 || map[row+1][col] == ' '){
-                    DrawLineEx(Vector2 {x, y + block_size}, Vector2 {x + block_size, y + block_size}, 2, color);
-                }
-            }
-        }
+    for(auto& wall: walls){
+        DrawLineEx(wall.getStartPosition(), wall.getEndPosition(), 2, wall.getColor());
     }
 }
 
 void Game::draw_pellets(){
-    for(Pellet& pellet: pellets){
+    for(auto& pellet: pellets){
         DrawCircle(pellet.getX(), pellet.getY(), radius, YELLOW);
     }
 }
 
-void Game::collision(std::string axis){
-    
+bool Game::wallCollisionDetected(Pacman pacman, Wall wall){
+    std::cout << CheckCollisionCircleLine(pacman.getCenter(), pacman.getRadius(), wall.getStartPosition(), wall.getEndPosition()) << std::endl;
+    return CheckCollisionCircleLine(pacman.getCenter(), pacman.getRadius(), wall.getStartPosition(), wall.getEndPosition());
+}
+
+bool Game::pelletCollisionDetected(Pacman, Pellet){
+
 }
 
 void Game::run(){
@@ -127,9 +124,8 @@ void Game::run(){
     const int screenWidth = 1280;
     const int screenHeight = 720;
 
-    SetTargetFPS(60);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(screenWidth, screenHeight, "Hello Raylib");
+    InitWindow(screenWidth, screenHeight, "Dual Pacman");
 
     while(!WindowShouldClose())
     {
@@ -138,12 +134,17 @@ void Game::run(){
 
         // Draw the walls and pellets
         draw_walls();
-        draw_pellets();
 
-        Vector2 blue_pacman_direction = Vector2{float(IsKeyDown(KEY_RIGHT)) - float(IsKeyDown(KEY_LEFT)),
-                                                float(IsKeyDown(KEY_DOWN)) - float(IsKeyDown(KEY_UP))};
-        Vector2 red_pacman_direction = Vector2{float(IsKeyDown(KEY_D)) - float(IsKeyDown(KEY_A)),
+        for(Pellet &pellet: pellets){
+            if(pelletCollisionDetected==false){
+                draw_pellets();
+            }
+        }
+
+        Vector2 blue_pacman_direction = Vector2{float(IsKeyDown(KEY_D)) - float(IsKeyDown(KEY_A)),
                                                 float(IsKeyDown(KEY_S)) - float(IsKeyDown(KEY_W))};
+        Vector2 red_pacman_direction = Vector2{float(IsKeyDown(KEY_RIGHT)) - float(IsKeyDown(KEY_LEFT)),
+                                                float(IsKeyDown(KEY_DOWN)) - float(IsKeyDown(KEY_UP))};
 
         pacmans[0].setDirection(blue_pacman_direction);
         pacmans[1].setDirection(red_pacman_direction);
@@ -152,8 +153,19 @@ void Game::run(){
         float dt = GetFrameTime();
 
         for(Pacman& pacman: pacmans){
+            bool collided = false;
+
             pacman.draw();
-            pacman.update(dt);
+            
+            for(Wall & wall: walls){
+                if(wallCollisionDetected(pacman, wall) == true){
+                    collided = true;
+                    break;
+                }
+            }
+            if(collided == false){
+                pacman.update(dt);
+            }
         }
         
         EndDrawing();

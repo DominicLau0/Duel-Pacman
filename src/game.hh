@@ -19,7 +19,8 @@ class Game
         void draw_walls();
         void draw_pellets();
 
-        void collision(std::string);
+        bool wallCollisionDetected(Pacman, Wall);
+        bool pelletCollisionDetected(Pacman, Pellet);
 
     private:
         Pacman pacmans[2];

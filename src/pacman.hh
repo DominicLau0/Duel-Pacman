@@ -19,6 +19,8 @@ class Pacman
         void setStartPoint(Vector2);
         void setDirection(Vector2);
         void setColor(Color);
+        Vector2 getCenter();
+        float getRadius();
 
     private:
         static int id_counter;
@@ -28,9 +30,10 @@ class Pacman
         float x = 0;
         float y = 0;
         Vector2 start_point;
-        int speed = 500;
+        float speed = 500;
         Vector2 direction;
         Color color;
+        float radius = 10;
 };
 
 #endif

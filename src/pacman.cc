@@ -5,6 +5,7 @@
 int Pacman::id_counter = 0;
 
 Pacman::Pacman(){
+    speed = 200;
 }
 
 Pacman::Pacman(float x, float y):
@@ -18,16 +19,24 @@ void Pacman::input(){
 }
 
 void Pacman::update(float dt){
-    start_point.x += direction.x * speed * dt;
-    start_point.y += direction.y * speed * dt;
+    start_point.x += (direction.x * speed * dt);
+    start_point.y += (direction.y * speed * dt);
 }
 
 void Pacman::draw(){
-    DrawCircleSector(start_point, 10, 0, 314, 100, color);
+    DrawCircleSector(start_point, radius, 0, 314, 100, color);
 }
 
 Vector2 Pacman::getStartPoint(){
     return start_point;
+}
+
+Vector2 Pacman::getCenter(){
+    return center;
+}
+
+float Pacman::getRadius(){
+    return radius;
 }
 
 void Pacman::setStartPoint(Vector2 start_point){

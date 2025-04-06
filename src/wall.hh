@@ -2,25 +2,27 @@
 #define WALL_HH
 
 #include "sprite.hh"
+#include "../include/raylib.h"
 
 class Wall
 {
     public:
         Wall();
-        Wall(float x, float y, float block_size);
+        Wall(Vector2, Vector2, Color);
         ~Wall();
 
-        float getX();
-        float getY();
-        float getBlockSize();
+        Vector2 getStartPosition();
+        Vector2 getEndPosition();
+        Color getColor();
 
     private:
         static int id_counter;
 
         int id;
-        float x = 0;
-        float y = 0;
-        float block_size = 50;
+
+        Vector2 startPosition = {0, 0};
+        Vector2 endPosition = {0, 0};
+        Color color = BLUE;
 };
 
 #endif

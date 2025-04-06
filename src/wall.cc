@@ -5,23 +5,21 @@ int Wall::id_counter = 0;
 Wall::Wall(){
 }
 
-Wall::Wall(float x, float y, float block_size):
-    id(id_counter++), x(x), y(y), block_size(block_size){
-        
+Wall::Wall(Vector2 startPosition, Vector2 endPosition, Color color):
+    id(id_counter++), startPosition(startPosition), endPosition(endPosition), color(color){
+
 }
 
 Wall::~Wall(){
     
 }
 
-float Wall::getX(){
-    return x;
+Vector2 Wall::getStartPosition(){
+    return startPosition;
 }
-
-float Wall::getY(){
-    return y;
+Vector2 Wall::getEndPosition(){
+    return endPosition;
 }
-
-float Wall::getBlockSize(){
-    return block_size;
+Color Wall::getColor(){
+    return color;
 }
