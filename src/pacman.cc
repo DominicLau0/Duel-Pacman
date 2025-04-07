@@ -6,10 +6,12 @@ int Pacman::id_counter = 0;
 
 Pacman::Pacman(){
     speed = 200;
+    center = start_point;
 }
 
 Pacman::Pacman(float x, float y):
     id(id_counter++), x(x), y(y){
+    center = start_point;
 }
 
 Pacman::~Pacman(){
@@ -18,8 +20,11 @@ Pacman::~Pacman(){
 void Pacman::input(){
 }
 
-void Pacman::update(float dt){
+void Pacman::update_x(float dt){
     start_point.x += (direction.x * speed * dt);
+}
+
+void Pacman::update_y(float dt){
     start_point.y += (direction.y * speed * dt);
 }
 
@@ -48,8 +53,17 @@ void Pacman::setStartPoint(Vector2 start_point){
     this->start_point.y += adjusted_y;
 }
 
+Vector2 Pacman::getDirection(){
+    return direction;
+}
+
+
 void Pacman::setDirection(Vector2 direction){
     this->direction = direction;
+}
+
+Color Pacman::getColor(){
+    return color;
 }
 
 void Pacman::setColor(Color color){

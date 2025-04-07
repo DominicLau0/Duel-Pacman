@@ -14,10 +14,13 @@ class Pacman
         ~Pacman();
         void input();
         void draw();
-        void update(float);
+        void update_x(float);
+        void update_y(float);
         Vector2 getStartPoint();
         void setStartPoint(Vector2);
+        Vector2 getDirection();
         void setDirection(Vector2);
+        Color getColor();
         void setColor(Color);
         Vector2 getCenter();
         float getRadius();

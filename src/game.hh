@@ -19,7 +19,7 @@ class Game
         void draw_walls();
         void draw_pellets();
 
-        bool wallCollisionDetected(Pacman, Wall);
+        bool wallCollisionDetected(Pacman, char);
         bool pelletCollisionDetected(Pacman, Pellet);
 
     private:

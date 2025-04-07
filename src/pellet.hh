@@ -7,18 +7,18 @@ class Pellet
 {
     public:
         Pellet();
-        Pellet(int x, int y, bool eaten);
+        Pellet(float x, float y, bool eaten);
         ~Pellet();
 
-        int getX();
-        int getY();
+        float getX();
+        float getY();
 
     private:
         static int id_counter;
 
         int id;
-        int x = 0;
-        int y = 0;
+        float x = 0;
+        float y = 0;
         bool eaten = false;
 };
 

@@ -110,13 +110,21 @@ void Game::draw_pellets(){
     }
 }
 
-bool Game::wallCollisionDetected(Pacman pacman, Wall wall){
-    std::cout << CheckCollisionCircleLine(pacman.getCenter(), pacman.getRadius(), wall.getStartPosition(), wall.getEndPosition()) << std::endl;
-    return CheckCollisionCircleLine(pacman.getCenter(), pacman.getRadius(), wall.getStartPosition(), wall.getEndPosition());
+bool Game::wallCollisionDetected(Pacman pacman, char axis){
+    for(Wall & wall: walls){
+        if (CheckCollisionCircleLine(pacman.getStartPoint(), pacman.getRadius(), wall.getStartPosition(), wall.getEndPosition()) == true){
+            if(axis == 'x'){
+                if(pacman.getDirection().x > 0){
+                }
+            }else{
+
+            }
+        }
+    }
 }
 
-bool Game::pelletCollisionDetected(Pacman, Pellet){
-
+bool Game::pelletCollisionDetected(Pacman pacman, Pellet pellet){
+    return CheckCollisionCircles(pacman.getStartPoint(), pacman.getRadius(), Vector2{pellet.getX(), pellet.getY()}, radius);  
 }
 
 void Game::run(){
@@ -134,10 +142,16 @@ void Game::run(){
 
         // Draw the walls and pellets
         draw_walls();
+        draw_pellets();
 
-        for(Pellet &pellet: pellets){
-            if(pelletCollisionDetected==false){
-                draw_pellets();
+        // Check for pacman collision on pellets.
+        for(Pacman& pacman: pacmans){
+            for(auto it = pellets.begin(); it != pellets.end();){
+                if(pelletCollisionDetected(pacman, *it)==true){
+                    it = pellets.erase(it);
+                }else{
+                    ++it;
+                }
             }
         }
 
@@ -155,17 +169,15 @@ void Game::run(){
         for(Pacman& pacman: pacmans){
             bool collided = false;
 
+            Vector2 previousPosition = pacman.getStartPoint();
+
             pacman.draw();
-            
-            for(Wall & wall: walls){
-                if(wallCollisionDetected(pacman, wall) == true){
-                    collided = true;
-                    break;
-                }
-            }
-            if(collided == false){
-                pacman.update(dt);
-            }
+
+            pacman.update_x(dt);
+            wallCollisionDetected(pacman, 'x');
+
+            pacman.update_y(dt);
+            wallCollisionDetected(pacman, 'y');
         }
         
         EndDrawing();
