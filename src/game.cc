@@ -110,21 +110,22 @@ void Game::draw_pellets(){
     }
 }
 
-bool Game::wallCollisionDetected(Pacman pacman, char axis){
-    for(Wall & wall: walls){
-        if (CheckCollisionCircleLine(pacman.getStartPoint(), pacman.getRadius(), wall.getStartPosition(), wall.getEndPosition()) == true){
-            if(axis == 'x'){
-                if(pacman.getDirection().x > 0){
-                }
-            }else{
-
-            }
+bool Game::wallCollisionDetected(Vector2 pos, float radius){
+    for(auto & wall: walls){
+        if (CheckCollisionCircleLine(pos, radius, wall.getStartPosition(), wall.getEndPosition())){
+            return true;
         }
     }
+    return false;
 }
+
 
 bool Game::pelletCollisionDetected(Pacman pacman, Pellet pellet){
     return CheckCollisionCircles(pacman.getStartPoint(), pacman.getRadius(), Vector2{pellet.getX(), pellet.getY()}, radius);  
+}
+
+bool Game::colorsEqual(Color c1, Color c2){
+    return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b &&c1.a == c2.a;
 }
 
 void Game::run(){
@@ -160,25 +161,34 @@ void Game::run(){
         Vector2 red_pacman_direction = Vector2{float(IsKeyDown(KEY_RIGHT)) - float(IsKeyDown(KEY_LEFT)),
                                                 float(IsKeyDown(KEY_DOWN)) - float(IsKeyDown(KEY_UP))};
 
-        pacmans[0].setDirection(blue_pacman_direction);
-        pacmans[1].setDirection(red_pacman_direction);
-
         //Draw pacman
         float dt = GetFrameTime();
 
         for(Pacman& pacman: pacmans){
-            bool collided = false;
+            // Determine the correct direction based on color or input.
+            Vector2 direction = (colorsEqual(pacman.getColor(), RED)) ? red_pacman_direction : blue_pacman_direction;
 
-            Vector2 previousPosition = pacman.getStartPoint();
-
+            pacman.setDirection(direction);
+            
+            // Compute a candidate new position for, say, the x-axis.
+            Vector2 candidatePosition = pacman.getStartPoint();
+            candidatePosition.x += direction.x * pacman.getSpeed() * dt;
+            
+            // If there's no collision predicted, update the x position.
+            if(!wallCollisionDetected(candidatePosition, pacman.getRadius())){
+                pacman.update_x(dt);
+            }
+            
+            // Repeat the process for the y-axis independently if desired.
+            candidatePosition = pacman.getStartPoint();
+            candidatePosition.y += direction.y * pacman.getSpeed() * dt;
+            if(!wallCollisionDetected(candidatePosition, pacman.getRadius())){
+                pacman.update_y(dt);
+            }
+            
             pacman.draw();
-
-            pacman.update_x(dt);
-            wallCollisionDetected(pacman, 'x');
-
-            pacman.update_y(dt);
-            wallCollisionDetected(pacman, 'y');
         }
+        
         
         EndDrawing();
     }

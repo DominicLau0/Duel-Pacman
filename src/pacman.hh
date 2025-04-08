@@ -24,6 +24,7 @@ class Pacman
         void setColor(Color);
         Vector2 getCenter();
         float getRadius();
+        float getSpeed();
 
     private:
         static int id_counter;

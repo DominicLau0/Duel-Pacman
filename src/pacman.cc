@@ -69,3 +69,7 @@ Color Pacman::getColor(){
 void Pacman::setColor(Color color){
     this->color = color;
 }
+
+float Pacman::getSpeed(){
+    return speed;
+}
