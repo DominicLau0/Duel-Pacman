@@ -7,6 +7,7 @@ int Pacman::id_counter = 0;
 Pacman::Pacman(){
     speed = 200;
     center = start_point;
+    score = 0;
 }
 
 Pacman::Pacman(float x, float y):
@@ -72,4 +73,11 @@ void Pacman::setColor(Color color){
 
 float Pacman::getSpeed(){
     return speed;
+}
+
+int Pacman::getScore(){
+    return score;
+}
+void Pacman::setScore(int score){
+    this->score = score;
 }

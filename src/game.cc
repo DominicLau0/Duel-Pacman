@@ -7,7 +7,7 @@ Game::Game(){
         "1                           1",
         "1   111111111         11  111",
         "1   1                 1     1",
-        "1   1     1           1     1",
+        "1   1     1   2       1     1",
         "1         111  111          1",
         "1   1            1    1111  1",
         "1   1      1                1",
@@ -89,7 +89,9 @@ void Game::create_map(){
                         walls.push_back(Wall(Vector2 {x, y + block_size}, Vector2 {x + block_size, y + block_size}, color));
                     }
                 }
-
+            }else if(tile == '2'){
+                ghost.setX(x);
+                ghost.setY(y);
             }else{
                 std::cout << "Cannot be processed." << std::endl;
             }
@@ -98,6 +100,17 @@ void Game::create_map(){
 }
 
 void Game::draw_walls(){
+    /**
+     * Draw the walls of the game
+     * 
+     * '0' represents no wall.
+     * '1' represents a wall.
+     * 
+     * Stores the created walls in the vector wall.
+     * 
+     * @param values None
+     * @return None
+     */
     // Iterate through each cell in the map
     for(auto& wall: walls){
         DrawLineEx(wall.getStartPosition(), wall.getEndPosition(), 2, wall.getColor());
@@ -125,16 +138,45 @@ bool Game::pelletCollisionDetected(Pacman pacman, Pellet pellet){
 }
 
 bool Game::colorsEqual(Color c1, Color c2){
+    /**
+     * Checks if the colors are the same.
+     * Return true if the colors are the same
+     * 
+     * c1 represents the first color
+     * c2 represents the second color
+     * 
+     * Stores the created walls in the vector wall.
+     * 
+     * @param c1 The first color
+     * @param c2 The second color
+     * @return True if the colors are the same, else False.
+     */
     return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b &&c1.a == c2.a;
 }
 
 void Game::run(){
-    // Initialize display
+    /**
+     * Run the program
+     * Return true if the colors are the same
+     * 
+     * c1 represents the first color
+     * c2 represents the second color
+     * 
+     * Stores the created walls in the vector wall.
+     * 
+     * @param none
+     * @return True if the colors are the same, else False.
+     */
+
     const int screenWidth = 1280;
     const int screenHeight = 720;
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "Dual Pacman");
+    
+    Image img = LoadImage("sprites/PinkGhost_Down.png");
+    ImageResize(&img, 20, 20);
+    ghost.loadTexture(img);
 
     while(!WindowShouldClose())
     {
@@ -150,6 +192,7 @@ void Game::run(){
             for(auto it = pellets.begin(); it != pellets.end();){
                 if(pelletCollisionDetected(pacman, *it)==true){
                     it = pellets.erase(it);
+                    pacman.setScore(pacman.getScore() + 1);
                 }else{
                     ++it;
                 }
@@ -188,8 +231,14 @@ void Game::run(){
             
             pacman.draw();
         }
-        
-        
+        // Update ghost movement;
+        ghost.update();
+        ghost.draw();
+
+        // Update the pacmans score.
+        DrawText(TextFormat("%i", pacmans[0].getScore()), map[0].size() * block_size, map.size() * block_size, 30, BLUE);
+        DrawText(TextFormat("%i", pacmans[1].getScore()), map[0].size() * block_size + 30, map.size() * block_size, 30, RED);
+
         EndDrawing();
     }
 

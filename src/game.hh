@@ -8,6 +8,7 @@
 #include "pellet.hh"
 #include "wall.hh"
 #include "pacman.hh"
+#include "ghost.hh"
 
 class Game
 {
@@ -26,6 +27,8 @@ class Game
 
     private:
         Pacman pacmans[2];
+
+        Ghost ghost;
 
         std::vector<Pellet> pellets;
         std::vector<std::string> map;

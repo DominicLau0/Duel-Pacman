@@ -25,6 +25,8 @@ class Pacman
         Vector2 getCenter();
         float getRadius();
         float getSpeed();
+        int getScore();
+        void setScore(int);
 
     private:
         static int id_counter;
@@ -38,6 +40,7 @@ class Pacman
         Vector2 direction;
         Color color;
         float radius = 10;
+        int score = 0;
 };
 
 #endif
