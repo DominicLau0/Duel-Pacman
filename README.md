@@ -1,4 +1,4 @@
-# Dual-Pacman
+# Duel-Pacman
 
 # Description
 Pacman game in progress
