@@ -10,21 +10,23 @@ class Pacman
 {
     public:
         Pacman();
-        Pacman(float, float);
+        Pacman(Vector2, float);
         ~Pacman();
-        void input();
+
         void draw();
         void update_x(float);
         void update_y(float);
-        Vector2 getStartPoint();
-        void setStartPoint(Vector2);
+
+        Vector2 getCoordinate();
+        void setCoordinate(Vector2);
         Vector2 getDirection();
         void setDirection(Vector2);
+        
         Color getColor();
         void setColor(Color);
-        Vector2 getCenter();
         float getRadius();
         float getSpeed();
+
         int getScore();
         void setScore(int);
 
@@ -32,14 +34,13 @@ class Pacman
         static int id_counter;
 
         int id;
-        Vector2 center = {50, 50};
-        float x = 0;
-        float y = 0;
-        Vector2 start_point;
-        float speed = 500;
-        Vector2 direction;
+
+        Vector2 coordinate;
+        float speed = 300;
+        Vector2 direction = {0, 0};
+
         Color color;
-        float radius = 10;
+        float radius = 8;
         int score = 0;
 };
 

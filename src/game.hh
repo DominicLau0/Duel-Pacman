@@ -10,23 +10,32 @@
 #include "pacman.hh"
 #include "ghost.hh"
 
+#define TEAL Color{ 53, 156, 156, 255 }
+#define DARKGOLD Color{ 194, 184, 83, 255 }
+
 class Game
 {
     public:
         Game();
         ~Game();
+
         void run();
         void create_map();
+
         void draw_walls();
         void draw_pellets();
 
         bool wallCollisionDetected(Vector2, float);
-        bool pelletCollisionDetected(Pacman, Pellet);
-
-        bool colorsEqual(Color, Color);
+        void checkPacmanPelletCollision();
 
     private:
-        Pacman pacmans[2];
+        int screenWidth = 640;
+        int screenHeight = 480;
+
+        int pacman_amount = 2;
+        
+        std::vector<Pacman> pacmans = {Pacman(), Pacman()};
+        std::vector<Color> pacman_colors = {BLUE, RED};
 
         Ghost ghost;
 
@@ -34,11 +43,8 @@ class Game
         std::vector<std::string> map;
         std::vector<Wall> walls;
 
-        float block_size = 0;
-        float radius = 5;
-
-        Vector2 pacman_first_position{-1, -1};
-        Vector2 pacman_last_position{-1, -1};
+        float block_size = 20;
+        float radius = 2;
 };
 
 #endif

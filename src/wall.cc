@@ -5,21 +5,18 @@ int Wall::id_counter = 0;
 Wall::Wall(){
 }
 
-Wall::Wall(Vector2 startPosition, Vector2 endPosition, Color color):
-    id(id_counter++), startPosition(startPosition), endPosition(endPosition), color(color){
-
+Wall::Wall(float x, float y, float width, float height, Color color):
+    wall({x, y, width, height}), color(color){
 }
 
 Wall::~Wall(){
     
 }
 
-Vector2 Wall::getStartPosition(){
-    return startPosition;
-}
-Vector2 Wall::getEndPosition(){
-    return endPosition;
-}
 Color Wall::getColor(){
     return color;
+}
+
+Rectangle Wall::getWall(){
+    return wall;
 }

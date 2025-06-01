@@ -8,11 +8,10 @@ class Wall
 {
     public:
         Wall();
-        Wall(Vector2, Vector2, Color);
+        Wall(float, float, float, float, Color);
         ~Wall();
-
-        Vector2 getStartPosition();
-        Vector2 getEndPosition();
+        
+        Rectangle getWall();
         Color getColor();
 
     private:
@@ -20,9 +19,9 @@ class Wall
 
         int id;
 
-        Vector2 startPosition = {0, 0};
-        Vector2 endPosition = {0, 0};
+        Vector2 coordinate = {0, 0};
         Color color = BLUE;
+        Rectangle wall;
 };
 
 #endif

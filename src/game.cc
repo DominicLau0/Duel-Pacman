@@ -1,236 +1,298 @@
 #include "game.hh"
 #include <iostream>
 
-Game::Game(){
+Game::Game()
+{
     map = {
-        "11111111111111111111111111111",
-        "1                           1",
-        "1   111111111         11  111",
-        "1   1                 1     1",
-        "1   1     1   2       1     1",
-        "1         111  111          1",
-        "1   1            1    1111  1",
-        "1   1      1                1",
-        "1   11111111    1111     1  1",
-        "1               1        1  1",
-        "11111111111111111111111111111"
-    };
+        "11111111111111111111111",
+        "1B         1          1",
+        "1 111 1111 1 1111 111 1",
+        "1        1 1 1        1",
+        "1111 111 1   1 111 1111",
+        "1      1 1 1 1 1      1",
+        "1  111 1   1   1 111  1",
+        "1    1 1 11111 1 1    1",
+        "1    1           1    1",
+        "1    1 11      1 1    1",
+        "1                    R1",
+        "11111111111111111111111"};
 
-    block_size = 25;
-    radius = 2;
+    // Initialize and create pacman objects.
+    for (int i = 0; i < pacman_amount; i++)
+    {
+        pacmans.push_back(Pacman());
+        pacmans[i].setColor(pacman_colors[i]);
+    }
 
     create_map();
-
-    pacmans[0].setStartPoint(pacman_first_position);
-    pacmans[1].setStartPoint(pacman_last_position);
-
-    pacmans[0].setColor(BLUE);
-    pacmans[1].setColor(RED);
 }
 
-Game::~Game(){
-
+Game::~Game()
+{
 }
 
-void Game::create_map(){
+void Game::create_map()
+{
     /**
      * Creates the layout of the pacman game.
-     * 
+     *
      * '0' represents no wall.
      * '1' represents a wall.
-     * 
+     *
      * Stores the created walls in the vector wall.
-     * 
+     *
      * @param values None
      * @return None
      */
 
-    for (int row = 0; row < map.size(); row++){
-        for(int column = 0; column < map[row].size(); column++){
+    for (int row = 0; row < map.size(); row++)
+    {
+        for (int column = 0; column < map[row].size(); column++)
+        {
             int tile = map[row][column];
 
             float x = column * block_size;
             float y = row * block_size;
 
-            if(tile == ' '){
-                pellets.push_back(Pellet(x, y, false));
+            if (tile == ' ')
+            {
+                // Draw the pellets
+                pellets.push_back(Pellet({x, y}, false));
+            }
+            else if (tile == '1')
+            {
+                // Draw the walls
+                if (map[row][column] != ' ')
+                {
+                    Color color = (x < ((int)map[row].size() / 2 * block_size)) ? TEAL : DARKGOLD;
 
-                pacman_last_position.x = x;
-                pacman_last_position.y = y;
+                    if (column + 1 < map[row].size() && map[row][column + 1] == '1')
+                    {
+                        // Check if there's a wall to the right of the wall
+                        walls.push_back(Wall(x,
+                                             y,
+                                             block_size,
+                                             block_size / 2,
+                                             color));
+                    }
 
-                if(pacman_first_position.x == -1) {
-                    pacman_first_position.x = x;
-                    pacman_first_position.y = y;
+                    if (row + 1 < map.size() && map[row + 1][column] == '1')
+                    {
+                        // Check if there's a wall to the bottom of the wall
+                        walls.push_back(Wall(x,
+                                             y,
+                                             block_size / 2,
+                                             block_size,
+                                             color));
+                    }
+
+                    walls.push_back(Wall(x,
+                                         y,
+                                         block_size / 2,
+                                         block_size / 2,
+                                         color));
                 }
             }
-            else if(tile == '1'){
-                if(map[row][column] != ' '){
-                    float x = column * block_size;
-                    float y = row * block_size;
-    
-                    // Choose a color based on horizontal position.
-                    Color color = (x < ((int)map[row].size()/2 * block_size)) ? BLUE : RED;
-    
-                    // For each side, check if the neighboring cell is not a wall.
-                    // Left side: if at left edge or left neighbor is empty.
-                    if(column == 0 || map[row][column-1] == ' '){
-                        walls.push_back(Wall(Vector2 {x, y}, Vector2 {x, y + block_size}, color));
-                    }
-                    // Right side: if at right edge or right neighbor is empty.
-                    if(column == map[row].size()-1 || map[row][column+1] == ' '){
-                        walls.push_back(Wall(Vector2 {x + block_size, y}, Vector2 {x + block_size, y + block_size}, color));
-                    }
-                    // Top side: if at top edge or the above neighbor is empty.
-                    if(row == 0 || map[row-1][column] == ' '){
-                        walls.push_back(Wall(Vector2 {x, y}, Vector2 {x + block_size, y}, color));
-                    }
-                    // Bottom side: if at bottom edge or the below neighbor is empty.
-                    if(row == map.size()-1 || map[row+1][column] == ' '){
-                        walls.push_back(Wall(Vector2 {x, y + block_size}, Vector2 {x + block_size, y + block_size}, color));
-                    }
-                }
-            }else if(tile == '2'){
+            else if (tile == '2')
+            {
+                // Set the location of the ghosts
                 ghost.setX(x);
                 ghost.setY(y);
-            }else{
+            }
+            else if (tile == 'B')
+            {
+                pacmans[0].setCoordinate({x, y});
+            }
+            else if (tile == 'R')
+            {
+                pacmans[1].setCoordinate({x, y});
+            }
+            else
+            {
                 std::cout << "Cannot be processed." << std::endl;
             }
         }
     }
 }
 
-void Game::draw_walls(){
+void Game::draw_walls()
+{
     /**
      * Draw the walls of the game
-     * 
+     *
      * '0' represents no wall.
      * '1' represents a wall.
-     * 
+     *
      * Stores the created walls in the vector wall.
-     * 
+     *
      * @param values None
      * @return None
      */
+
     // Iterate through each cell in the map
-    for(auto& wall: walls){
-        DrawLineEx(wall.getStartPosition(), wall.getEndPosition(), 2, wall.getColor());
+    for (auto &wall : walls)
+    {
+        DrawRectangleRec(wall.getWall(), wall.getColor());
     }
 }
 
-void Game::draw_pellets(){
-    for(auto& pellet: pellets){
-        DrawCircle(pellet.getX(), pellet.getY(), radius, YELLOW);
+void Game::draw_pellets()
+{
+    for (auto &pellet : pellets)
+    {
+        DrawCircle(pellet.getCoordinate().x + block_size / 2, pellet.getCoordinate().y + block_size / 2, radius, BEIGE);
     }
 }
 
-bool Game::wallCollisionDetected(Vector2 pos, float radius){
-    for(auto & wall: walls){
-        if (CheckCollisionCircleLine(pos, radius, wall.getStartPosition(), wall.getEndPosition())){
+bool Game::wallCollisionDetected(Vector2 pos, float radius)
+{
+    for (auto &wall : walls)
+    {
+        if (CheckCollisionCircleRec(pos, radius, wall.getWall()))
+        {
             return true;
         }
     }
     return false;
 }
 
-
-bool Game::pelletCollisionDetected(Pacman pacman, Pellet pellet){
-    return CheckCollisionCircles(pacman.getStartPoint(), pacman.getRadius(), Vector2{pellet.getX(), pellet.getY()}, radius);  
-}
-
-bool Game::colorsEqual(Color c1, Color c2){
+void Game::checkPacmanPelletCollision()
+{
     /**
-     * Checks if the colors are the same.
-     * Return true if the colors are the same
-     * 
-     * c1 represents the first color
-     * c2 represents the second color
-     * 
-     * Stores the created walls in the vector wall.
-     * 
-     * @param c1 The first color
-     * @param c2 The second color
-     * @return True if the colors are the same, else False.
+     * Check if there's a collision between any of the pellets.
+     * Remove pellets if the pacman collides with the pellets.
+     *
+     * @param values None
+     * @return None
      */
-    return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b &&c1.a == c2.a;
+
+    for (Pacman &pacman : pacmans)
+    {
+        // For each Pacman, check if there's a collision between any of the pellets
+        for (auto it = pellets.begin(); it != pellets.end();)
+        {
+            bool collision = CheckCollisionCircles(
+                pacman.getCoordinate(),
+                pacman.getRadius(),
+                Vector2{
+                    it->getCoordinate().x + block_size / 2,
+                    it->getCoordinate().y + block_size / 2},
+                radius);
+
+            // Remove pellets if the pacman collides with the pellets.
+            if (collision == true)
+            {
+                it = pellets.erase(it);
+                pacman.setScore(pacman.getScore() + 1);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
 }
 
-void Game::run(){
+void Game::run()
+{
     /**
      * Run the program
      * Return true if the colors are the same
-     * 
+     *
      * c1 represents the first color
      * c2 represents the second color
-     * 
+     *
      * Stores the created walls in the vector wall.
-     * 
+     *
      * @param none
      * @return True if the colors are the same, else False.
      */
 
-    const int screenWidth = 1280;
-    const int screenHeight = 720;
-
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "Dual Pacman");
-    
+
     Image img = LoadImage("sprites/PinkGhost_Down.png");
     ImageResize(&img, 20, 20);
     ghost.loadTexture(img);
 
-    while(!WindowShouldClose())
+    while (!WindowShouldClose())
     {
         BeginDrawing();
         ClearBackground(BLACK);
 
         // Draw the walls and pellets
         draw_walls();
+        checkPacmanPelletCollision();
         draw_pellets();
-
-        // Check for pacman collision on pellets.
-        for(Pacman& pacman: pacmans){
-            for(auto it = pellets.begin(); it != pellets.end();){
-                if(pelletCollisionDetected(pacman, *it)==true){
-                    it = pellets.erase(it);
-                    pacman.setScore(pacman.getScore() + 1);
-                }else{
-                    ++it;
-                }
-            }
-        }
 
         Vector2 blue_pacman_direction = Vector2{float(IsKeyDown(KEY_D)) - float(IsKeyDown(KEY_A)),
                                                 float(IsKeyDown(KEY_S)) - float(IsKeyDown(KEY_W))};
         Vector2 red_pacman_direction = Vector2{float(IsKeyDown(KEY_RIGHT)) - float(IsKeyDown(KEY_LEFT)),
-                                                float(IsKeyDown(KEY_DOWN)) - float(IsKeyDown(KEY_UP))};
+                                               float(IsKeyDown(KEY_DOWN)) - float(IsKeyDown(KEY_UP))};
 
-        //Draw pacman
+        // Only update direction if a movement key is pressed
+        // Blue Pacman
+        if (IsKeyPressed(KEY_W))
+        {
+            pacmans[0].setDirection({0, -1});
+        }
+        else if (IsKeyPressed(KEY_S))
+        {
+            pacmans[0].setDirection(Vector2{0, 1});
+        }
+        else if (IsKeyPressed(KEY_A))
+        {
+            pacmans[0].setDirection(Vector2{-1, 0});
+        }
+        else if (IsKeyPressed(KEY_D))
+        {
+            pacmans[0].setDirection(Vector2{1, 0});
+        }
+
+        // Red Pacman
+        if (IsKeyPressed(KEY_UP))
+        {
+            pacmans[1].setDirection(Vector2{0, -1});
+        }
+        else if (IsKeyPressed(KEY_DOWN))
+        {
+            pacmans[1].setDirection(Vector2{0, 1});
+        }
+        else if (IsKeyPressed(KEY_LEFT))
+        {
+            pacmans[1].setDirection(Vector2{-1, 0});
+        }
+        else if (IsKeyPressed(KEY_RIGHT))
+        {
+            pacmans[1].setDirection(Vector2{1, 0});
+        }
+
         float dt = GetFrameTime();
 
-        for(Pacman& pacman: pacmans){
-            // Determine the correct direction based on color or input.
-            Vector2 direction = (colorsEqual(pacman.getColor(), RED)) ? red_pacman_direction : blue_pacman_direction;
+        // Draw the pacmans
+        for (int i = 0; i < pacmans.size(); i++)
+        {
+            // Update the x position if no collision detected.
+            Vector2 testPosition = pacmans[i].getCoordinate();
+            testPosition.x += pacmans[i].getDirection().x * pacmans[i].getSpeed() * dt;
 
-            pacman.setDirection(direction);
-            
-            // Compute a candidate new position for, say, the x-axis.
-            Vector2 candidatePosition = pacman.getStartPoint();
-            candidatePosition.x += direction.x * pacman.getSpeed() * dt;
-            
-            // If there's no collision predicted, update the x position.
-            if(!wallCollisionDetected(candidatePosition, pacman.getRadius())){
-                pacman.update_x(dt);
+            if (!wallCollisionDetected(testPosition, pacmans[i].getRadius()))
+            {
+                pacmans[i].update_x(dt);
             }
-            
-            // Repeat the process for the y-axis independently if desired.
-            candidatePosition = pacman.getStartPoint();
-            candidatePosition.y += direction.y * pacman.getSpeed() * dt;
-            if(!wallCollisionDetected(candidatePosition, pacman.getRadius())){
-                pacman.update_y(dt);
+
+            // Update the y position if no collision detected.
+            testPosition = pacmans[i].getCoordinate();
+            testPosition.y += pacmans[i].getDirection().y * pacmans[i].getSpeed() * dt;
+
+            if (!wallCollisionDetected(testPosition, pacmans[i].getRadius()))
+            {
+                pacmans[i].update_y(dt);
             }
-            
-            pacman.draw();
+
+            pacmans[i].draw();
         }
+
         // Update ghost movement;
         ghost.update();
         ghost.draw();
