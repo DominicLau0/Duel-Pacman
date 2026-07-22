@@ -36,11 +36,11 @@ class Pacman
         int id;
 
         Vector2 coordinate;
-        float speed = 300;
+        float speed = 100;
         Vector2 direction = {0, 0};
 
         Color color;
-        float radius = 8;
+        float radius = 10;
         int score = 0;
 };
 

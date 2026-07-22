@@ -1,45 +1,74 @@
 #include "ghost.hh"
 
-Ghost::Ghost(){
-
+Ghost::Ghost()
+{
 }
 
-Ghost::~Ghost(){
+Ghost::~Ghost()
+{
     UnloadTexture(ghost);
 }
 
-void Ghost::loadTexture(Image img){
+void Ghost::loadTexture(Image img)
+{
     ghost = LoadTextureFromImage(img);
 }
 
-Texture2D Ghost::getGhost(){
+Texture2D Ghost::getGhost()
+{
     return ghost;
 }
 
-void Ghost::update(){
+void Ghost::update_x(float dt)
+{
+    coordinate.x += (direction.x * speed * dt);
+}
+
+void Ghost::update_y(float dt)
+{
+    coordinate.y += (direction.y * speed * dt);
+}
+
+Vector2 Ghost::generateDirection()
+{
     int dir = rand() % 4;
-    switch(dir) {
-        case 0: x += speed; break;
-        case 1: x -= speed; break;
-        case 2: y += speed; break;
-        case 3: y -= speed; break;
+
+    if (dir == 0)
+    {
+        direction = {0, -1};
     }
-}
-void Ghost::draw(){
-    DrawTexture(ghost, x, y, WHITE);
+    else if (dir == 1)
+    {
+        direction = {0, 1};
+    }
+    else if (dir == 2)
+    {
+        direction = {-1, 0};
+    }
+    else
+    {
+        direction = {1, 0};
+    }
+
+    return direction;
 }
 
-float Ghost::getX(){
-    return x;
-}
-float Ghost::getY(){
-    return y;
-}
-
-void Ghost::setX(float x){
-    this->x = x;
+void Ghost::draw()
+{
+    DrawTextureV(ghost, coordinate, WHITE);
+    collisionBox = {coordinate.x, coordinate.y, 20, 20};
 }
 
-void Ghost::setY(float y){
-    this->y = y;
+Vector2 Ghost::getCoordinate()
+{
+    return coordinate;
+}
+
+void Ghost::setCoordinate(Vector2 coordinate)
+{
+    this->coordinate = coordinate;
+}
+
+float Ghost::getSpeed(){
+    return speed;
 }

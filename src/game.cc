@@ -4,18 +4,28 @@
 Game::Game()
 {
     map = {
-        "11111111111111111111111",
-        "1B         1          1",
-        "1 111 1111 1 1111 111 1",
-        "1        1 1 1        1",
-        "1111 111 1   1 111 1111",
-        "1      1 1 1 1 1      1",
-        "1  111 1   1   1 111  1",
-        "1    1 1 11111 1 1    1",
-        "1    1           1    1",
-        "1    1 11      1 1    1",
-        "1                    R1",
-        "11111111111111111111111"};
+        "111111111111111111111",
+        "1 B       1         1",
+        "1 111 111 1 111 111 1",
+        "1       1 1 1       1",
+        "111 111 1   1 111 111",
+        "1     1 1 1 1 1     1",
+        "1 111 1   1   1 111 1",
+        "1   1 1 11111 1 1   1",
+        "111 1           1 111",
+        "1 1 1 1 11 11 1 1 1 1",
+        "1     1 1 G 1 1     1",
+        "111 111 11111 111 111",
+        "1                   1",
+        "1 111 1 11111 1 111 1",
+        "1 1   1   1   1   1 1",
+        "1 1 11111 1 11111 1 1",
+        "1                   1",
+        "11111 1 11111 1 11111",
+        "1     1   1   1     1",
+        "1 1111111 1 1111111 1",
+        "1         1       R 1",
+        "111111111111111111111"};
 
     // Initialize and create pacman objects.
     for (int i = 0; i < pacman_amount; i++)
@@ -24,7 +34,19 @@ Game::Game()
         pacmans[i].setColor(pacman_colors[i]);
     }
 
+    // Initialize and create ghost objects.
+    /*
+    for (int i = 0; i < ghost_amount; i++)
+    {
+        ghosts.push_back(Ghost());
+    }
+    */
+
     create_map();
+
+    // Set screen width and height.
+    screenWidth = map[0].size() * block_size - block_size / 2;
+    screenHeight = map.size() * block_size - block_size / 2 + 30;
 }
 
 Game::~Game()
@@ -93,11 +115,10 @@ void Game::create_map()
                                          color));
                 }
             }
-            else if (tile == '2')
+            else if (tile == 'G')
             {
                 // Set the location of the ghosts
-                ghost.setX(x);
-                ghost.setY(y);
+                ghosts[0].setCoordinate({x, y});
             }
             else if (tile == 'B')
             {
@@ -193,6 +214,30 @@ void Game::checkPacmanPelletCollision()
     }
 }
 
+void Game::draw_scoreboard(){
+    DrawRectangle(0,
+        map.size() * block_size - block_size / 2,
+        map[0].size() * block_size - block_size / 2,
+        30,
+        DARKBROWN);
+
+    DrawText(TextFormat("Score: "),
+        0,
+        map.size() * block_size - block_size / 2,
+        25,
+        BEIGE);
+    DrawText(TextFormat("%03i", pacmans[0].getScore()),
+        (map[0].size() * block_size) / 4,
+        map.size() * block_size - block_size / 2,
+        30,
+        BLUE);
+    DrawText(TextFormat("%03i", pacmans[1].getScore()),
+        (map[0].size() * block_size) * 0.60,
+        map.size() * block_size - block_size / 2,
+        30,
+        RED);
+}
+
 void Game::run()
 {
     /**
@@ -211,9 +256,10 @@ void Game::run()
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "Dual Pacman");
 
-    Image img = LoadImage("sprites/PinkGhost_Down.png");
-    ImageResize(&img, 20, 20);
-    ghost.loadTexture(img);
+    // Load ghost image
+    //Image img = LoadImage("sprites/PinkGhost_Down.png");
+    //ImageResize(&img, 20, 20);
+    //ghosts[0].loadTexture(img);
 
     while (!WindowShouldClose())
     {
@@ -225,11 +271,6 @@ void Game::run()
         checkPacmanPelletCollision();
         draw_pellets();
 
-        Vector2 blue_pacman_direction = Vector2{float(IsKeyDown(KEY_D)) - float(IsKeyDown(KEY_A)),
-                                                float(IsKeyDown(KEY_S)) - float(IsKeyDown(KEY_W))};
-        Vector2 red_pacman_direction = Vector2{float(IsKeyDown(KEY_RIGHT)) - float(IsKeyDown(KEY_LEFT)),
-                                               float(IsKeyDown(KEY_DOWN)) - float(IsKeyDown(KEY_UP))};
-
         // Only update direction if a movement key is pressed
         // Blue Pacman
         if (IsKeyPressed(KEY_W))
@@ -238,38 +279,43 @@ void Game::run()
         }
         else if (IsKeyPressed(KEY_S))
         {
-            pacmans[0].setDirection(Vector2{0, 1});
+            pacmans[0].setDirection({0, 1});
         }
         else if (IsKeyPressed(KEY_A))
         {
-            pacmans[0].setDirection(Vector2{-1, 0});
+            pacmans[0].setDirection({-1, 0});
         }
         else if (IsKeyPressed(KEY_D))
         {
-            pacmans[0].setDirection(Vector2{1, 0});
+            pacmans[0].setDirection({1, 0});
         }
 
         // Red Pacman
         if (IsKeyPressed(KEY_UP))
         {
-            pacmans[1].setDirection(Vector2{0, -1});
+            pacmans[1].setDirection({0, -1});
         }
         else if (IsKeyPressed(KEY_DOWN))
         {
-            pacmans[1].setDirection(Vector2{0, 1});
+            pacmans[1].setDirection({0, 1});
         }
         else if (IsKeyPressed(KEY_LEFT))
         {
-            pacmans[1].setDirection(Vector2{-1, 0});
+            pacmans[1].setDirection({-1, 0});
         }
         else if (IsKeyPressed(KEY_RIGHT))
         {
-            pacmans[1].setDirection(Vector2{1, 0});
+            pacmans[1].setDirection({1, 0});
         }
 
         float dt = GetFrameTime();
 
-        // Draw the pacmans
+        if (dt > 0.1f)
+        {
+            dt = 0.1f;
+        }
+
+        // Draw and update pacmans
         for (int i = 0; i < pacmans.size(); i++)
         {
             // Update the x position if no collision detected.
@@ -293,13 +339,38 @@ void Game::run()
             pacmans[i].draw();
         }
 
-        // Update ghost movement;
-        ghost.update();
-        ghost.draw();
+        // Draw and update ghosts;
+        /*
+        for (int i = 0; i < ghosts.size(); i++)
+        {
+            // Update the x position if no collision detected.
+            Vector2 testPosition = ghosts[i].getCoordinate();
+            testPosition.x += ghosts[i].generateDirection().x * pacmans[i].getSpeed() * dt;
 
-        // Update the pacmans score.
-        DrawText(TextFormat("%i", pacmans[0].getScore()), map[0].size() * block_size, map.size() * block_size, 30, BLUE);
-        DrawText(TextFormat("%i", pacmans[1].getScore()), map[0].size() * block_size + 30, map.size() * block_size, 30, RED);
+            if (!wallCollisionDetected(testPosition, ghosts[i].getRadius()))
+            {
+                ghosts[i].update_x(dt);
+            }
+
+            // Update the y position if no collision detected.
+            testPosition = pacmans[i].getCoordinate();
+            testPosition.y += pacmans[i].generateDirection().y * pacmans[i].getSpeed() * dt;
+
+            if (!wallCollisionDetected(testPosition, pacmans[i].getRadius()))
+            {
+                pacmans[i].update_y(dt);
+            }
+
+            pacmans[i].draw();
+        }
+
+        // Update ghost movement;
+        ghosts[0].update();
+        ghosts[0].draw();
+        */
+
+        // Draw scoreboard
+        draw_scoreboard();
 
         EndDrawing();
     }

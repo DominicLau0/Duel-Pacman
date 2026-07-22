@@ -24,6 +24,7 @@ class Game
 
         void draw_walls();
         void draw_pellets();
+        void draw_scoreboard();
 
         bool wallCollisionDetected(Vector2, float);
         void checkPacmanPelletCollision();
@@ -33,11 +34,12 @@ class Game
         int screenHeight = 480;
 
         int pacman_amount = 2;
+        int ghost_amount = 4;
         
         std::vector<Pacman> pacmans = {Pacman(), Pacman()};
         std::vector<Color> pacman_colors = {BLUE, RED};
 
-        Ghost ghost;
+        std::vector<Ghost> ghosts = {Ghost()};
 
         std::vector<Pellet> pellets;
         std::vector<std::string> map;

@@ -4,72 +4,82 @@
 
 int Pacman::id_counter = 0;
 
-Pacman::Pacman(){
+Pacman::Pacman()
+{
     speed = 100;
     score = 0;
     direction = {0, 0};
 }
 
-Pacman::Pacman(Vector2 coordinate, float y):
-    id(id_counter++), coordinate(coordinate){
+Pacman::Pacman(Vector2 coordinate, float y) : id(id_counter++), coordinate(coordinate)
+{
+    radius = 10;
 }
 
-Pacman::~Pacman(){
+Pacman::~Pacman()
+{
 }
 
-void Pacman::update_x(float dt){
+void Pacman::update_x(float dt)
+{
     coordinate.x += (direction.x * speed * dt);
 }
 
-void Pacman::update_y(float dt){
+void Pacman::update_y(float dt)
+{
     coordinate.y += (direction.y * speed * dt);
 }
 
-void Pacman::draw(){
+void Pacman::draw()
+{
     DrawCircleSector(coordinate, radius, 0, 314, 100, color);
 }
 
-Vector2 Pacman::getCoordinate(){
+Vector2 Pacman::getCoordinate()
+{
     return coordinate;
 }
 
-float Pacman::getRadius(){
+float Pacman::getRadius()
+{
     return radius;
 }
 
-void Pacman::setCoordinate(Vector2 coordinate){
-    float adjusted_x = 25/2;
-    float adjusted_y = 25/2;
-
+void Pacman::setCoordinate(Vector2 coordinate)
+{
     this->coordinate = coordinate;
-    this->coordinate.x += adjusted_x;
-    this->coordinate.y += adjusted_y;
 }
 
-Vector2 Pacman::getDirection(){
+Vector2 Pacman::getDirection()
+{
     return direction;
 }
 
-
-void Pacman::setDirection(Vector2 direction){
+void Pacman::setDirection(Vector2 direction)
+{
     this->direction = direction;
 }
 
-Color Pacman::getColor(){
+Color Pacman::getColor()
+{
     return color;
 }
 
-void Pacman::setColor(Color color){
+void Pacman::setColor(Color color)
+{
     this->color = color;
 }
 
-float Pacman::getSpeed(){
+float Pacman::getSpeed()
+{
     return speed;
 }
 
-int Pacman::getScore(){
+int Pacman::getScore()
+{
     return score;
 }
-void Pacman::setScore(int score){
+void Pacman::setScore(int score)
+{
     this->score = score;
 }
