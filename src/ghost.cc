@@ -4,14 +4,21 @@ Ghost::Ghost()
 {
 }
 
-Ghost::~Ghost()
+Ghost::Ghost(Texture2D texture, Rectangle source, Rectangle dest)
 {
-    UnloadTexture(ghost);
+    ghost = texture;
+    spriteCoordinate = source;
+    coordinate = dest;
 }
 
-void Ghost::loadTexture(Image img)
+Ghost::~Ghost()
 {
-    ghost = LoadTextureFromImage(img);
+}
+
+void Ghost::setTexture(Texture2D texture)
+{
+    ghost = texture;
+    spriteCoordinate = Rectangle{0, 0, };
 }
 
 Texture2D Ghost::getGhost()
@@ -55,16 +62,16 @@ Vector2 Ghost::generateDirection()
 
 void Ghost::draw()
 {
-    DrawTextureV(ghost, coordinate, WHITE);
-    collisionBox = {coordinate.x, coordinate.y, 20, 20};
+    DrawTexturePro(ghost, spriteCoordinate, coordinate, Vector2{0,0}, 0, WHITE);
+    //collisionBox = {coordinate.x, coordinate.y, 20, 20};
 }
 
-Vector2 Ghost::getCoordinate()
+Rectangle Ghost::getCoordinate()
 {
     return coordinate;
 }
 
-void Ghost::setCoordinate(Vector2 coordinate)
+void Ghost::setCoordinate(Rectangle coordinate)
 {
     this->coordinate = coordinate;
 }

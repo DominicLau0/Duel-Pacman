@@ -9,6 +9,7 @@ class Ghost : public Sprite
 {
     public:
         Ghost();
+        Ghost(Texture2D, Rectangle, Rectangle);
         ~Ghost();
 
         Texture2D getGhost();
@@ -18,23 +19,25 @@ class Ghost : public Sprite
 
         Vector2 generateDirection();
 
-        Vector2 getCoordinate();
-        void setCoordinate(Vector2);
+        Rectangle getCoordinate();
+        void setCoordinate(Rectangle);
         Vector2 getDirection();
         void setDirection(Vector2);
 
         void loadTexture(Image);
+        void setTexture(Texture2D);
         float getSpeed();
 
     private:
         int id;
+
+        Rectangle spriteCoordinate;
         
-        Vector2 coordinate;
+        Rectangle coordinate;
         Vector2 direction = {0, 0};
         float speed = 100;
 
         Texture2D ghost;
-        Rectangle collisionBox;
 };
 
 #endif

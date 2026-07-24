@@ -13,8 +13,8 @@ Game::Game()
         "1 111 1   1   1 111 1",
         "1   1 1 11111 1 1   1",
         "111 1           1 111",
-        "1 1 1 1 11 11 1 1 1 1",
-        "1     1 1 G 1 1     1",
+        "1 1 1 1 11X11 1 1 1 1",
+        "1     1 1OGP1 1     1",
         "111 111 11111 111 111",
         "1                   1",
         "1 111 1 11111 1 111 1",
@@ -33,14 +33,6 @@ Game::Game()
         pacmans.push_back(Pacman());
         pacmans[i].setColor(pacman_colors[i]);
     }
-
-    // Initialize and create ghost objects.
-    /*
-    for (int i = 0; i < ghost_amount; i++)
-    {
-        ghosts.push_back(Ghost());
-    }
-    */
 
     create_map();
 
@@ -115,10 +107,25 @@ void Game::create_map()
                                          color));
                 }
             }
-            else if (tile == 'G')
+            else if (tile == 'X')
             {
                 // Set the location of the ghosts
                 ghosts[0].setCoordinate({x, y});
+            }
+            else if (tile == 'O')
+            {
+                // Set the location of the ghosts
+                ghosts[1].setCoordinate({x, y});
+            }
+            else if (tile == 'G')
+            {
+                // Set the location of the ghosts
+                ghosts[2].setCoordinate({x, y});
+            }
+            else if (tile == 'P')
+            {
+                // Set the location of the ghosts
+                ghosts[3].setCoordinate({x, y});
             }
             else if (tile == 'B')
             {
@@ -170,6 +177,18 @@ bool Game::wallCollisionDetected(Vector2 pos, float radius)
     for (auto &wall : walls)
     {
         if (CheckCollisionCircleRec(pos, radius, wall.getWall()))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Game::wallCollisionDetected(Rectangle pos)
+{
+    for (auto &wall : walls)
+    {
+        if (CheckCollisionRecs(pos, wall.getWall()))
         {
             return true;
         }
@@ -238,6 +257,16 @@ void Game::draw_scoreboard(){
         RED);
 }
 
+void Game::initializeGhosts(){
+    for (int i = 0; i < ghost_amount; i++)
+    {
+        Rectangle source = Rectangle{spriteStartingX, spriteStartingY + ((spriteSize + 2) * i), spriteSize, spriteSize};
+        Rectangle dest = Rectangle{ghosts[i].getCoordinate().x, ghosts[i].getCoordinate().x, spriteSize, spriteSize};
+        
+        ghosts.push_back(Ghost(texture, source, dest));
+    }
+}
+
 void Game::run()
 {
     /**
@@ -255,6 +284,9 @@ void Game::run()
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "Dual Pacman");
+
+    texture = LoadTexture("sprites/sprites.png");
+    initializeGhosts();
 
     // Load ghost image
     //Image img = LoadImage("sprites/PinkGhost_Down.png");
@@ -340,34 +372,28 @@ void Game::run()
         }
 
         // Draw and update ghosts;
-        /*
         for (int i = 0; i < ghosts.size(); i++)
         {
             // Update the x position if no collision detected.
-            Vector2 testPosition = ghosts[i].getCoordinate();
-            testPosition.x += ghosts[i].generateDirection().x * pacmans[i].getSpeed() * dt;
+            Rectangle testPosition = ghosts[i].getCoordinate();
+            testPosition.x += ghosts[i].generateDirection().x * ghosts[i].getSpeed() * dt;
 
-            if (!wallCollisionDetected(testPosition, ghosts[i].getRadius()))
+            if (!wallCollisionDetected(testPosition))
             {
                 ghosts[i].update_x(dt);
             }
 
             // Update the y position if no collision detected.
-            testPosition = pacmans[i].getCoordinate();
-            testPosition.y += pacmans[i].generateDirection().y * pacmans[i].getSpeed() * dt;
+            testPosition = ghosts[i].getCoordinate();
+            testPosition.y += ghosts[i].generateDirection().y * ghosts[i].getSpeed() * dt;
 
-            if (!wallCollisionDetected(testPosition, pacmans[i].getRadius()))
+            if (!wallCollisionDetected(testPosition))
             {
-                pacmans[i].update_y(dt);
+                ghosts[i].update_y(dt);
             }
 
-            pacmans[i].draw();
+            ghosts[i].draw();
         }
-
-        // Update ghost movement;
-        ghosts[0].update();
-        ghosts[0].draw();
-        */
 
         // Draw scoreboard
         draw_scoreboard();

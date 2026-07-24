@@ -13,6 +13,9 @@
 #define TEAL Color{ 53, 156, 156, 255 }
 #define DARKGOLD Color{ 194, 184, 83, 255 }
 
+#define TEXTURE_WIDTH 680
+#define TEXTURE_HEIGHT 248 
+
 class Game
 {
     public:
@@ -27,7 +30,10 @@ class Game
         void draw_scoreboard();
 
         bool wallCollisionDetected(Vector2, float);
+        bool wallCollisionDetected(Rectangle pos);
         void checkPacmanPelletCollision();
+
+        void initializeGhosts();
 
     private:
         int screenWidth = 640;
@@ -35,6 +41,13 @@ class Game
 
         int pacman_amount = 2;
         int ghost_amount = 4;
+
+        Texture2D texture;
+        float spriteSize = 14;
+        float spriteSpace = 2;
+
+        float spriteStartingX = 457;
+        float spriteStartingY = 65;
         
         std::vector<Pacman> pacmans = {Pacman(), Pacman()};
         std::vector<Color> pacman_colors = {BLUE, RED};

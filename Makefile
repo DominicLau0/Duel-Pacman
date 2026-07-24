@@ -1,6 +1,6 @@
 # Output file
-SRC = src/main.cc src/ghost.cc src/pacman.cc src/game.cc src/pellet.cc src/scoreboard.cc src/sprite.cc src/wall.cc
-OBJ = src/main.o src/ghost.o src/pacman.o src/game.o src/pellet.o src/scoreboard.o src/sprite.o src/wall.o
+SRC = src/main.cc src/ghost.cc src/pacman.cc src/game.cc src/pellet.cc src/sprite.cc src/wall.cc
+OBJ = src/main.o src/ghost.o src/pacman.o src/game.o src/pellet.o src/sprite.o src/wall.o
 
 # Default target
 all: game.exe
