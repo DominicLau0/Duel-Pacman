@@ -63,7 +63,6 @@ Vector2 Ghost::generateDirection()
 void Ghost::draw()
 {
     DrawTexturePro(ghost, spriteCoordinate, coordinate, Vector2{0,0}, 0, WHITE);
-    //collisionBox = {coordinate.x, coordinate.y, 20, 20};
 }
 
 Rectangle Ghost::getCoordinate()
