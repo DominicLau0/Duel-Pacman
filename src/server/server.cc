@@ -1,13 +1,15 @@
 #include <iostream>
+#include "protocol.hh"
+
 #include <enet/enet.h>
 
-void SendPacket(EnetPeer* server, const char*data){
+void SendPacket(EnetPeer* peer, const char*data){
     EnetPacket* packet = enet_packet_create(data. strlen(data) + 1, ENET_PACKET_FLAG_RELIABLE);
-    enet_peer_send(server, 0, packet);
+    enet_peer_send(peer, 0, packet);
 }
 
 void ParseData(EnetHost* server, int id, char* data){
-    
+
 }
  
 int main(){
@@ -23,15 +25,9 @@ int main(){
     ENETHost * server;
 
     address.host = ENET_HOST_ANY;
-    address.port = 1234;
+    address.port = 3000;
 
-    server = enet_host_create(
-        &address,
-        32,
-        2,
-        0,
-        0
-    );
+    server = enet_host_create(&address, 32, 2, 0, 0);
 
     if(server == NULL){
         fprintf (stderr, 
@@ -57,6 +53,21 @@ int main(){
                         event.channelID);
 
                 enet_packet_destroy(event.packet);
+
+                // Extract message type from packet
+
+                // Parse message from packet
+                MessageType type = protocol.readMessageType();
+
+                switch(type){
+                    case MessageType::PlayerState:
+                        bool 
+                        break;
+                    case MessageType::PlayerJoined:
+                        break;
+                    case MessageType::PlayerLeft:
+                        break;
+                }
                 break;
 
             case ENET_EVENT_TYPE_DISCONNECT:
