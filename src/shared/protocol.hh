@@ -14,14 +14,12 @@ enum class MessageType : uint8_t{
 // Client -> Server packet
 struct PlayerInput
 {
-    MessageType PlayerInput;
+    int32_t id;
 
     bool up;
     bool down;
     bool left;
     bool right;
-
-    int score;
 };
 
 
@@ -32,6 +30,8 @@ struct PlayerState
 
     float x;
     float y;
+    
+    int score;
 };
 
 struct PelletState

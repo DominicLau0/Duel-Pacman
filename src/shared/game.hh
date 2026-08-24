@@ -9,6 +9,7 @@
 #include "wall.hh"
 #include "pacman.hh"
 #include "ghost.hh"
+#include "ClientNetwork.hh"
 
 #define TEAL Color{ 53, 156, 156, 255 }
 #define DARKGOLD Color{ 194, 184, 83, 255 }
@@ -60,6 +61,8 @@ class Game
 
         float block_size = 20;
         float radius = 2;
+
+        Client clientNetwork;
 };
 
 #endif

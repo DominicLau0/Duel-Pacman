@@ -15,7 +15,7 @@ class Serialization{
         void writeBool(bool);
         void writeString(const std::string&);
 
-        const std::vector<uint8_t>& data() const;
+        const std::vector<uint8_t>& getSerializedData() const;
     private:
         std::vector<uint8_t> buffer;
 };

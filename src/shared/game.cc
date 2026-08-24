@@ -261,7 +261,7 @@ void Game::initializeGhosts(){
     for (int i = 0; i < ghost_amount; i++)
     {
         Rectangle source = Rectangle{spriteStartingX, spriteStartingY + ((spriteSize + 2) * i), spriteSize, spriteSize};
-        Rectangle dest = Rectangle{ghosts[i].getCoordinate().x, ghosts[i].getCoordinate().x, spriteSize, spriteSize};
+        Rectangle dest = Rectangle{ghosts[i].getCoordinate().x, ghosts[i].getCoordinate().y, spriteSize, spriteSize};
         
         ghosts.push_back(Ghost(texture, source, dest));
     }
@@ -282,6 +282,10 @@ void Game::run()
      * @return True if the colors are the same, else False.
      */
 
+    if(clientNetwork.connect("127.0.0.1", 3000)){
+        return;
+    }
+
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "Dual Pacman");
 
@@ -295,6 +299,17 @@ void Game::run()
 
     while (!WindowShouldClose())
     {
+        // Send data to server
+
+
+        // Poll data from server
+        network.poll();
+        // Process input
+
+        // Update
+
+        // Render
+
         BeginDrawing();
         ClearBackground(BLACK);
 

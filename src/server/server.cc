@@ -22,7 +22,7 @@ int main(){
 
     //Create an ENet server
     ENetAddress address;
-    ENETHost * server;
+    ENetHost * server;
 
     address.host = ENET_HOST_ANY;
     address.port = 3000;

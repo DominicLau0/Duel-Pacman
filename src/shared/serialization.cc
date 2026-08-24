@@ -32,6 +32,6 @@ void Serialization::writeBool(bool value){
 void Serialization::writeString(const std::string& value){
 }
 
-const std::vector<uint8_t>& Serialization::data() const{
+const std::vector<uint8_t>& Serialization::getSerializedData() const{
     return buffer;
 }
