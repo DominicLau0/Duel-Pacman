@@ -10,6 +10,7 @@
 #include "pacman.hh"
 #include "ghost.hh"
 #include "ClientNetwork.hh"
+#include "protocol.hh"
 
 #define TEAL Color{ 53, 156, 156, 255 }
 #define DARKGOLD Color{ 194, 184, 83, 255 }

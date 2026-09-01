@@ -6,7 +6,7 @@
 // Message Type
 enum class MessageType : uint8_t{
     PlayerInput = 1,
-    WorldState = 2,
+    GameState = 2,
     PlayerJoined = 3,
     PlayerLeft = 4
 };
@@ -14,12 +14,8 @@ enum class MessageType : uint8_t{
 // Client -> Server packet
 struct PlayerInput
 {
-    int32_t id;
-
-    bool up;
-    bool down;
-    bool left;
-    bool right;
+    int8_t dx;
+    int8_t dy;
 };
 
 

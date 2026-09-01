@@ -3,6 +3,15 @@
 
 #include <enet/enet.h>
 
+constexpr uint16_t SERVER_PORT = 7777;
+constexpr size_t MAX_PLAYERS = 32;
+
+constexpr double TICK_RATE = 16.0;
+constexpr double TICK_DT = 1.0 / TICK_RATE;
+
+constexpr double SNAPSHOT_RATE = 20.0;
+constexpr double SNAPSHOT_DT = 1.0 / SNAPSHOT_RATE;
+
 void SendPacket(EnetPeer* peer, const char*data){
     EnetPacket* packet = enet_packet_create(data. strlen(data) + 1, ENET_PACKET_FLAG_RELIABLE);
     enet_peer_send(peer, 0, packet);
@@ -10,6 +19,15 @@ void SendPacket(EnetPeer* peer, const char*data){
 
 void ParseData(EnetHost* server, int id, char* data){
 
+}
+
+void Server::handlePacket(){
+    if(type == MessageType::PlayerInput){
+        PlayerInput input;
+
+        int32_t playerId = getPlayerId(peer);
+        world.processInput(playerId, input);
+    }
 }
  
 int main(){

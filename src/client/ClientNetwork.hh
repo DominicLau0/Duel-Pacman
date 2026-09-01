@@ -21,6 +21,8 @@ class ClientNetwork{
         ENetPeer* server = nullptr;
 
         std::vector<PlayerState> players;
+        std::vector<PelletState> pellets;
+        std::vector<GhostState> ghosts;
 
         bool enetInitialized = false;
 

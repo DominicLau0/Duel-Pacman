@@ -287,26 +287,50 @@ void Game::run()
     }
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(screenWidth, screenHeight, "Dual Pacman");
+    InitWindow(screenWidth, screenHeight, "Duel Pacman");
 
     texture = LoadTexture("sprites/sprites.png");
     initializeGhosts();
 
-    // Load ghost image
-    //Image img = LoadImage("sprites/PinkGhost_Down.png");
-    //ImageResize(&img, 20, 20);
-    //ghosts[0].loadTexture(img);
-
     while (!WindowShouldClose())
     {
         // Send data to server
+        PlayerInput input;
 
+        if (IsKeyPressed(KEY_W))
+        {
+            input.dx = 0;
+            input.dy = -1;
+        }
+        else if (IsKeyPressed(KEY_S))
+        {
+            input.dx = 0;
+            input.dy = 1;
+        }
+        else if (IsKeyPressed(KEY_A))
+        {
+            input.dx = -1;
+            input.dy = 0;
+        }
+        else if (IsKeyPressed(KEY_D))
+        {
+            input.dx = 1;
+            input.dy = 0;
+        }
+
+        input.id = CLIENT_ID;
+
+        clientNetwork.sendInput(input);
 
         // Poll data from server
-        network.poll();
-        // Process input
+        clientNetwork.poll();
+
+        for(){
+            
+        }
 
         // Update
+        
 
         // Render
 
@@ -317,43 +341,6 @@ void Game::run()
         draw_walls();
         checkPacmanPelletCollision();
         draw_pellets();
-
-        // Only update direction if a movement key is pressed
-        // Blue Pacman
-        if (IsKeyPressed(KEY_W))
-        {
-            pacmans[0].setDirection({0, -1});
-        }
-        else if (IsKeyPressed(KEY_S))
-        {
-            pacmans[0].setDirection({0, 1});
-        }
-        else if (IsKeyPressed(KEY_A))
-        {
-            pacmans[0].setDirection({-1, 0});
-        }
-        else if (IsKeyPressed(KEY_D))
-        {
-            pacmans[0].setDirection({1, 0});
-        }
-
-        // Red Pacman
-        if (IsKeyPressed(KEY_UP))
-        {
-            pacmans[1].setDirection({0, -1});
-        }
-        else if (IsKeyPressed(KEY_DOWN))
-        {
-            pacmans[1].setDirection({0, 1});
-        }
-        else if (IsKeyPressed(KEY_LEFT))
-        {
-            pacmans[1].setDirection({-1, 0});
-        }
-        else if (IsKeyPressed(KEY_RIGHT))
-        {
-            pacmans[1].setDirection({1, 0});
-        }
 
         float dt = GetFrameTime();
 

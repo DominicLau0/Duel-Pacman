@@ -95,7 +95,7 @@ void ClientNetwork::poll(){
 
             case ENET_EVENT_TYPE_RECEIVE:
                 // Deserialize the data and extract message type
-                handlePacket(event.packet);
+                readPacket(event.packet);
                 enet_packet_destroy(event.packet);
                 
                 break;
@@ -159,13 +159,46 @@ void ClientNetwork::readPacket(const ENetPacket* packet){
     MessageType type = static_cast<MessageType>(messageType);
 
     switch(type){
-        case MessageType::PlayerState:
-            PlayerState playerState;
+        case MessageType::GameState:
+            // Compute player
+            uint32_t playerCount = deserializer.readUInt32();
 
-            playerState.id = deserializer.readInt32();
-            playerState.x = deserializer.readFloat();
-            playerState.y = deserializer.readFloat();
-            playerState.score = deserializer.readInt32();
+            for(uint32_t i = 0; i < playerCount; i++){
+                PlayerState player;
+
+                player.id = deserializer.readInt32();
+                player.x = deserializer.readFloat();
+                player.y = deserializer.readFloat();
+                player.score = deserializer.readInt32();
+
+                players.push_back(player);
+            }
+
+            // Compute pellets
+            uint32_t pelletCount = deserializer.readUInt32();
+
+            for(uint32_t i = 0; i < pelletCount; i++){
+                PelletState pellet;
+
+                pellet.id = deserializer.readInt32();
+                pellet.x = deserializer.readFloat();
+                pellet.y = deserializer.readFloat();
+
+                pellets.push_back(pellet);
+            }
+
+            // Compute ghosts
+            uint32_t ghostCount = deserializer.readUInt32();
+
+            for(uint32_t i = 0; i < ghostCount; i++){
+                GhostState ghost;
+
+                ghost.id = deserializer.readInt32();
+                ghost.x = deserializer.readFloat();
+                ghost.y = deserializer.readFloat();
+
+                ghosts.push_back(ghost);
+            }
 
             bool found = false;
 
