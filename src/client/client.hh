@@ -1,18 +1,16 @@
-#ifndef CLIENTNETWORK_HH
-#define CLIENTNETWORK_HH
+#ifndef CLIENT_HH
+#define CLIENT_HH
 
 #include <enet/enet.h>
 #include <string>
 
-class ClientNetwork{
+class Client{
     public:
-        ClientNetwork();
-        ~ClientNetwork();
+        ~Client();
 
-        bool connect(const std::string& host, uint16_t port);
+        bool connect(const char* host, uint16_t port);
         void poll();
-        void sendInputPacket(const void* data, size_t size, bool reliable = true);
-
+        void sendInputPacket(const PlayerInput&);
 
         const std::vector<PlayerState>& getPlayers() const;
 
@@ -27,6 +25,6 @@ class ClientNetwork{
         bool enetInitialized = false;
 
         void readPacket(const ENetPacket* packet);
-}
+};
 
 #endif

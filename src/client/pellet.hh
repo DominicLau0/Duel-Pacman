@@ -1,7 +1,7 @@
 #ifndef PELLET_HH
 #define PELLET_HH
 
-#include "../include/raylib.h"
+#include "../../include/raylib.h"
 #include "sprite.hh"
 
 class Pellet

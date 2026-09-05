@@ -12,6 +12,7 @@ class Deserialization{
         ~Deserialization();
 
         uint8_t readUInt8();
+        int8_t readInt8();
         uint32_t readUInt32();
         int32_t readInt32();
         float readFloat();

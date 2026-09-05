@@ -4,12 +4,20 @@
 #include <vector>
 #include <string>
 
-#include "../include/raylib.h"
+// Certain functions in raylib and enet collides (enet due to Win32 API function).
+// Need to disable these from Win32 API to allow us to use these functions for Raylib.
+#if defined(_WIN32)
+    #define WIN32_LEAN_AND_MEAN
+    #define NOGDI   // Prevents wingdi.h from defining Rectangle()
+    #define NOUSER  // Prevents winuser.h from defining CloseWindow(), ShowCursor(), etc.
+#endif
+
+#include "../../include/raylib.h"
 #include "pellet.hh"
 #include "wall.hh"
 #include "pacman.hh"
 #include "ghost.hh"
-#include "ClientNetwork.hh"
+#include "client.hh"
 #include "protocol.hh"
 
 #define TEAL Color{ 53, 156, 156, 255 }

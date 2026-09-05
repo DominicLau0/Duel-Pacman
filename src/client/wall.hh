@@ -2,7 +2,7 @@
 #define WALL_HH
 
 #include "sprite.hh"
-#include "../include/raylib.h"
+#include "../../include/raylib.h"
 
 class Wall
 {

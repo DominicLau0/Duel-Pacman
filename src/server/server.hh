@@ -1,23 +1,28 @@
 #ifndef SERVER_HH
 #define SERVER_HH
 
-#include "/gamestate.hh"
+#include <enet/enet.h>
+
+#include "deserialization.hh"
+
+#include "game.hh"
+#include <vector>
 
 class Server{
     public:
-        bool start(uint16_t port);
-        void run();
+        Server();
+        ~Server();
+
+        bool start(uint16_t port, size_t maxClients = 32, size_t channels = 2);
+        void update();
+        void stop();
+
+        bool sendPackets();
+        void receivePackets(std::vector<Pacman>&);
+        void readPacket(const ENetPacket*, std::vector<Pacman>&);
 
     private:
-        EnetHost* host = nullptr;
-
-        void pollNetwork();
-        void handlePacket(EnetPeer* peer, EnetPacket* packet);
-
-        void handlePlayerInput(ENetPeer* peer, const PlayerInput& input);
-
-        void sendGameState();
-
-        GameState gamestate;
-}
+        ENetHost* host = nullptr;
+        ENetHost* server = nullptr;
+};
 #endif

@@ -4,6 +4,10 @@ void Serialization::writeUInt8(uint8_t value){
     buffer.push_back(value);
 }
 
+void Serialization::writeInt8(int8_t value){
+    writeUInt8(static_cast<uint8_t>(value));
+}
+
 void Serialization::writeUInt32(uint32_t value){
     buffer.push_back(static_cast<uint8_t>((value >> 0) & 0xFF));
     buffer.push_back(static_cast<uint8_t>((value >> 8) & 0xFF));

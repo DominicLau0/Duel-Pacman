@@ -4,17 +4,13 @@
 #include "serialization.hh"
 #include "deserialization.hh"
 
-#include "ClientNetwork.hh"
+#include "client.hh"
 
 #include <enet/enet.h>
 
 static int CLIENT_ID = -1;
 
-ClientNetwork::ClientNetwork(){
-
-}
-
-ClientNetwork::~ClientNetwork(){
+Client::~Client(){
     if(server != nullptr){
         enet_peer_disconnect(server, 0);
         server = nullptr;
@@ -31,7 +27,7 @@ ClientNetwork::~ClientNetwork(){
     }
 }
 
-bool ClientNetwork::connect(const std::string& host, uint16_t port){
+bool Client::connect(const char* host, uint16_t port){
     // Initialize ENet and create an ENet client
     if(enetInitialized == false){
         if (enet_initialize() != 0){
@@ -71,7 +67,7 @@ bool ClientNetwork::connect(const std::string& host, uint16_t port){
         return true;
     }
     else{
-        enet_peer_reset (peer);
+        enet_peer_reset (server);
         puts ("Connection to some.server.net:3000 failed.");
         server = nullptr;
 
@@ -79,7 +75,7 @@ bool ClientNetwork::connect(const std::string& host, uint16_t port){
     }
 }
 
-void ClientNetwork::poll(){
+void Client::poll(){
     if(client == nullptr){
         return;
     }
@@ -90,7 +86,8 @@ void ClientNetwork::poll(){
     while (enet_host_service(client, &event, 0) > 0) {
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT:
-                puts("Connected.\n")
+                puts("Connected.\n");
+
                 break;
 
             case ENET_EVENT_TYPE_RECEIVE:
@@ -115,7 +112,7 @@ void ClientNetwork::poll(){
     }
 }
 
-void ClientNetwork::sendInputPacket(const PlayerInput& input){
+void Client::sendInputPacket(const PlayerInput& playerInput){
     if(server == nullptr){
         return;
     }
@@ -123,20 +120,18 @@ void ClientNetwork::sendInputPacket(const PlayerInput& input){
     Serialization serializer;
 
     // Packet message type
-    serializer.writeUInt8(MessageType::PlayerInput);
+    serializer.writeUInt8(static_cast<uint8_t>(MessageType::PlayerInput));
 
     // Player Input
-    serializer.writeBool(player.up);
-    serializer.writeBool(player.down);
-    serializer.writeBool(player.left);
-    serializer.writeBool(player.right);
+    serializer.writeInt8(playerInput.dx);
+    serializer.writeInt8(playerInput.dy);
 
     // Get serialization data
-    const std::vector<uint8_t>& data = serialier.getSerializedData();
+    const std::vector<uint8_t>& data = serializer.getSerializedData();
     
-    enet_uint32 flag = reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNSEQUENCED;
+    //enet_uint32 flag = reliable ? ENET_PACKET_FLAG_RELIABLE : ENET_PACKET_FLAG_UNSEQUENCED;
 
-    EnetPacket* packet = enet_packet_create(data.data(), data.size(), flag);
+    ENetPacket* packet = enet_packet_create(data.data(), data.size(), ENET_PACKET_FLAG_RELIABLE);
 
     if(packet == nullptr){
         return;
@@ -146,7 +141,7 @@ void ClientNetwork::sendInputPacket(const PlayerInput& input){
     enet_host_flush(client);
 }
 
-void ClientNetwork::readPacket(const ENetPacket* packet){
+void Client::readPacket(const ENetPacket* packet){
     if(packet == nullptr){
         return;
     }
@@ -200,27 +195,13 @@ void ClientNetwork::readPacket(const ENetPacket* packet){
                 ghosts.push_back(ghost);
             }
 
-            bool found = false;
-
-            for(PlayerState& player : players){
-                if(player.id == playerState.id){
-                    player = playerState;
-                    found = true;
-                    break;
-                }
-            }
-
-            if(!found){
-                players.push_back(state);
-            }
-
         default:
-            puts(stderr, "Received unknown message type: %d\n", messageType);
+            fprintf(stderr, "Received unknown message type: %d\n", messageType);
 
             break;
     }
 }
 
-const std::vector<PlayerState>& ClientNetwork::getPlayers() const{
+const std::vector<PlayerState>& Client::getPlayers() const{
     return players;
 }

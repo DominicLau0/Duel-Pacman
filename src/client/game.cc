@@ -282,7 +282,7 @@ void Game::run()
      * @return True if the colors are the same, else False.
      */
 
-    if(clientNetwork.connect("127.0.0.1", 3000)){
+    if(!clientNetwork.connect("127.0.0.1", 3000)){
         return;
     }
 
@@ -320,7 +320,7 @@ void Game::run()
 
         input.id = CLIENT_ID;
 
-        clientNetwork.sendInput(input);
+        clientNetwork.sendInputPacket(input);
 
         // Poll data from server
         clientNetwork.poll();

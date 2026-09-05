@@ -20,6 +20,10 @@ uint8_t Deserialization::readUInt8(){
     return data[position++];
 }
 
+int8_t Deserialization::readInt8(){
+    return static_cast<uint8_t>(readUInt8());
+}
+
 uint32_t Deserialization::readUInt32(){
     if(!hasBytes(4)){
         throw std::runtime_error("Packet does not contain enough data");

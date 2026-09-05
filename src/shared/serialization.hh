@@ -9,6 +9,7 @@
 class Serialization{
     public:       
         void writeUInt8(uint8_t);
+        void writeInt8(int8_t);
         void writeUInt32(uint32_t);
         void writeInt32(int32_t);
         void writeFloat(float);

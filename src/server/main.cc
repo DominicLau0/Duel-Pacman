@@ -1,7 +1,9 @@
-#include "server.hh"
+#include "game.hh"
 
 int main(){
-    Server server;
+    Game game;
+    game.run();
 
+    return 0;
 
 }
