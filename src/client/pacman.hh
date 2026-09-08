@@ -2,7 +2,7 @@
 #define PACMAN_HH
 
 #include "sprite.hh"
-#include "../include/raylib.h"
+#include "../../include/raylib.h"
 
 #include <vector>
 
@@ -31,8 +31,6 @@ class Pacman
         void setScore(int);
 
     private:
-        static int id_counter;
-
         int id;
 
         Vector2 coordinate;

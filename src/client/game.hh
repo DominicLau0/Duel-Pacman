@@ -4,11 +4,21 @@
 #include <vector>
 #include <string>
 
-#include "../include/raylib.h"
+// Certain functions in raylib and enet collides (enet due to Win32 API function).
+// Need to disable these from Win32 API to allow us to use these functions for Raylib.
+#if defined(_WIN32)
+    #define WIN32_LEAN_AND_MEAN
+    #define NOGDI   // Prevents wingdi.h from defining Rectangle()
+    #define NOUSER  // Prevents winuser.h from defining CloseWindow(), ShowCursor(), etc.
+#endif
+
+#include "../../include/raylib.h"
 #include "pellet.hh"
 #include "wall.hh"
 #include "pacman.hh"
 #include "ghost.hh"
+#include "client.hh"
+#include "protocol.hh"
 
 #define TEAL Color{ 53, 156, 156, 255 }
 #define DARKGOLD Color{ 194, 184, 83, 255 }
@@ -36,6 +46,8 @@ class Game
         void initializeGhosts();
 
     private:
+        uint8_t pacmanId = 0;
+
         int screenWidth = 640;
         int screenHeight = 480;
 
@@ -60,6 +72,8 @@ class Game
 
         float block_size = 20;
         float radius = 2;
+
+        Client clientNetwork;
 };
 
 #endif

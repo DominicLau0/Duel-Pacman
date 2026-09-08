@@ -261,7 +261,7 @@ void Game::initializeGhosts(){
     for (int i = 0; i < ghost_amount; i++)
     {
         Rectangle source = Rectangle{spriteStartingX, spriteStartingY + ((spriteSize + 2) * i), spriteSize, spriteSize};
-        Rectangle dest = Rectangle{ghosts[i].getCoordinate().x, ghosts[i].getCoordinate().x, spriteSize, spriteSize};
+        Rectangle dest = Rectangle{ghosts[i].getCoordinate().x, ghosts[i].getCoordinate().y, spriteSize, spriteSize};
         
         ghosts.push_back(Ghost(texture, source, dest));
     }
@@ -282,19 +282,58 @@ void Game::run()
      * @return True if the colors are the same, else False.
      */
 
+    if(!clientNetwork.connect("127.0.0.1", 3000)){
+        return;
+    }
+
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(screenWidth, screenHeight, "Dual Pacman");
+    InitWindow(screenWidth, screenHeight, "Duel Pacman");
 
     texture = LoadTexture("sprites/sprites.png");
     initializeGhosts();
 
-    // Load ghost image
-    //Image img = LoadImage("sprites/PinkGhost_Down.png");
-    //ImageResize(&img, 20, 20);
-    //ghosts[0].loadTexture(img);
-
     while (!WindowShouldClose())
     {
+        // Send data to server
+        PlayerInput input;
+
+        if (IsKeyPressed(KEY_W))
+        {
+            input.dx = 0;
+            input.dy = -1;
+        }
+        else if (IsKeyPressed(KEY_S))
+        {
+            input.dx = 0;
+            input.dy = 1;
+        }
+        else if (IsKeyPressed(KEY_A))
+        {
+            input.dx = -1;
+            input.dy = 0;
+        }
+        else if (IsKeyPressed(KEY_D))
+        {
+            input.dx = 1;
+            input.dy = 0;
+        }
+
+        input.id = CLIENT_ID;
+
+        clientNetwork.sendInputPacket(input);
+
+        // Poll data from server
+        clientNetwork.poll();
+
+        for(){
+            
+        }
+
+        // Update
+        
+
+        // Render
+
         BeginDrawing();
         ClearBackground(BLACK);
 
@@ -302,43 +341,6 @@ void Game::run()
         draw_walls();
         checkPacmanPelletCollision();
         draw_pellets();
-
-        // Only update direction if a movement key is pressed
-        // Blue Pacman
-        if (IsKeyPressed(KEY_W))
-        {
-            pacmans[0].setDirection({0, -1});
-        }
-        else if (IsKeyPressed(KEY_S))
-        {
-            pacmans[0].setDirection({0, 1});
-        }
-        else if (IsKeyPressed(KEY_A))
-        {
-            pacmans[0].setDirection({-1, 0});
-        }
-        else if (IsKeyPressed(KEY_D))
-        {
-            pacmans[0].setDirection({1, 0});
-        }
-
-        // Red Pacman
-        if (IsKeyPressed(KEY_UP))
-        {
-            pacmans[1].setDirection({0, -1});
-        }
-        else if (IsKeyPressed(KEY_DOWN))
-        {
-            pacmans[1].setDirection({0, 1});
-        }
-        else if (IsKeyPressed(KEY_LEFT))
-        {
-            pacmans[1].setDirection({-1, 0});
-        }
-        else if (IsKeyPressed(KEY_RIGHT))
-        {
-            pacmans[1].setDirection({1, 0});
-        }
 
         float dt = GetFrameTime();
 
