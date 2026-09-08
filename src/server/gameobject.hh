@@ -24,7 +24,7 @@ struct Rectangle
 // Game data
 struct Pacman
 {
-    uint32_t id=0;
+    uint8_t id = 0;
     ENetPeer* peer = nullptr;
 
     Vector2 coordinate = {0.0f, 0.0f};
@@ -47,7 +47,7 @@ struct Ghost
 struct Pellet
 {
     Vector2 coordinate = {0.0f, 0.0f};
-    bool eaten;
+    bool eaten = false;
 };
 
 struct Wall

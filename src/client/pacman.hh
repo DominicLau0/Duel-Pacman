@@ -31,8 +31,6 @@ class Pacman
         void setScore(int);
 
     private:
-        static int id_counter;
-
         int id;
 
         Vector2 coordinate;

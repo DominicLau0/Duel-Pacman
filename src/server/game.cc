@@ -77,7 +77,10 @@ void Game::create_map()
             }
             else if (tile == 'B' || tile == 'R'){
                 // Set location of the pacman
-                pacmans.push_back(Pacman{x, y});
+                Pacman pacman;
+                pacman.coordinate = Vector2{x, y};
+                
+                pacmans.push_back(pacman);
             }
             else{
                 std::cout << "Cannot be processed." << std::endl;

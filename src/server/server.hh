@@ -3,6 +3,7 @@
 
 #include <enet/enet.h>
 
+#include "serialization.hh"
 #include "deserialization.hh"
 
 #include "game.hh"
@@ -17,12 +18,16 @@ class Server{
         void update();
         void stop();
 
-        bool sendPackets();
+        void sendPackets(std::vector<Pacman>&, std::vector<Pellet>&, std::vector<Ghost>&);
         void receivePackets(std::vector<Pacman>&);
-        void readPacket(const ENetPacket*, std::vector<Pacman>&);
+        void readPacket(const ENetPacket*, uint8_t playerId, std::vector<Pacman>&);
+
+        void playerJoinedPacket(const PlayerJoined& playerJoined, ENetPeer*);
 
     private:
         ENetHost* host = nullptr;
         ENetHost* server = nullptr;
+
+        uint8_t nextPlayerId = 1;
 };
 #endif

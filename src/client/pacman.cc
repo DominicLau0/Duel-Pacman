@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-int Pacman::id_counter = 0;
-
 Pacman::Pacman()
 {
     speed = 100;
@@ -11,7 +9,7 @@ Pacman::Pacman()
     direction = {0, 0};
 }
 
-Pacman::Pacman(Vector2 coordinate, float y) : id(id_counter++), coordinate(coordinate)
+Pacman::Pacman(Vector2 coordinate, float y) : coordinate(coordinate)
 {
     radius = 10;
 }

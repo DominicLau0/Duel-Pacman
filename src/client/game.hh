@@ -46,6 +46,8 @@ class Game
         void initializeGhosts();
 
     private:
+        uint8_t pacmanId = 0;
+
         int screenWidth = 640;
         int screenHeight = 480;
 

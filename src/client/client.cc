@@ -149,11 +149,15 @@ void Client::readPacket(const ENetPacket* packet){
     Deserialization deserializer(packet->data, packet->dataLength);
 
     // Read message type
-    int32_t messageType = deserializer.readInt32();
+    int32_t messageType = deserializer.readUInt8();
 
     MessageType type = static_cast<MessageType>(messageType);
 
     switch(type){
+        case MessageType::PlayerJoined:
+            pacmanId = deserializer.readUInt8();
+
+            break;
         case MessageType::GameState:
             // Compute player
             uint32_t playerCount = deserializer.readUInt32();
@@ -194,6 +198,8 @@ void Client::readPacket(const ENetPacket* packet){
 
                 ghosts.push_back(ghost);
             }
+
+            break;
 
         default:
             fprintf(stderr, "Received unknown message type: %d\n", messageType);

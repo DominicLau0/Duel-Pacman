@@ -15,6 +15,7 @@ class Client{
         const std::vector<PlayerState>& getPlayers() const;
 
     private:
+        uint8_t pacmanId = 0;
         ENetHost* client = nullptr;
         ENetPeer* server = nullptr;
 

@@ -20,6 +20,15 @@ struct PlayerInput
 
 
 // Server -> Client packet
+struct PlayerJoined
+{
+    uint8_t id;
+};
+
+struct PlayerLeft
+{
+
+};
 struct PlayerState
 {
     int id;
