@@ -8,6 +8,8 @@
     #define NOGDI   // Prevents wingdi.h from defining Rectangle()
 #endif
 
+#define NOMINMAX
+
 #include "../shared/protocol.hh"
 #include "gameobject.hh"
 #include "server.hh"
@@ -28,14 +30,18 @@ class Game{
         std::vector<Pacman> pacmans;
         std::vector<Pellet> pellets;
         std::vector<Ghost> ghosts;
-        std::vector<Wall> walls;
+        std::vector<Rect> walls;
 
         std::vector<std::string> map;
 
         void create_map();
 
         bool wallCollisionDetected(Vector2 pos, float radius);
+        bool wallCollisionDetected(Rect pos);
         void checkPacmanPelletCollision();
+
+        bool checkCollisionCircleRec(Vector2 circle, float radius, Rect rect);
+        bool checkCollisionCircles(Vector2 center1, float radius1, Vector2 center2, float radius2);
 
         void update(float dt);
         void processInput(int32_t playerId, const PlayerInput& input);
@@ -45,6 +51,7 @@ class Game{
         Vector2 generateDirection();
 
         float block_size = 20.0f;
+        float spriteSize = 14;
 };
 
 #endif

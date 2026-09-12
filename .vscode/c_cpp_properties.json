@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${vcpkgRoot}/x86-windows/include",
-                "C:/Users/79820/Documents/enet/include"
+                "C:/Users/79820/Documents/enet/include",
+                "C:/Users/79820/Documents/enet/include/enet"
             ],
             "defines": [
                 "_DEBUG",

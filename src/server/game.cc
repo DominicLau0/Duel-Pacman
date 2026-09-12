@@ -60,16 +60,16 @@ void Game::create_map()
                 if (column + 1 < map[row].size() && map[row][column + 1] == '1')
                 {
                     // Check if there's a wall to the right of the wall
-                    walls.push_back(Wall{x, y, block_size, block_size/2});
+                    walls.push_back(Rect{x, y, block_size, block_size/2});
                 }
 
                 if (row + 1 < map.size() && map[row + 1][column] == '1')
                 {
                     // Check if there's a wall to the bottom of the wall
-                    walls.push_back(Wall{x, y, block_size/2, block_size});
+                    walls.push_back(Rect{x, y, block_size/2, block_size});
                 }
 
-                walls.push_back(Wall{x, y, block_size / 2, block_size / 2});
+                walls.push_back(Rect{x, y, block_size / 2, block_size / 2});
             }
             else if (tile == 'X' || tile == 'O' || tile == 'G' || tile == 'P'){
                 // Set the location of the ghosts
@@ -89,9 +89,10 @@ void Game::create_map()
     }
 }
 
-bool checkCollisionCircleRec(Vector2 circle, float radius, struct Rectangle rect){
-    float closestX = std::max(rect.x, std::min(circle.x, rect.x + rect.width));
-    float closestY = std::max(rect.y, std::min(circle.y, rect.y + rect.height));
+// Collision functions
+bool Game::checkCollisionCircleRec(Vector2 circle, float radius, Rect rect){
+    float closestX = std::max(rect.coordinate.x, std::min(circle.x, rect.coordinate.x + rect.width));
+    float closestY = std::max(rect.coordinate.y, std::min(circle.y, rect.coordinate.y + rect.height));
 
     float dx = circle.x - closestX;
     float dy = circle.y - closestY;
@@ -99,7 +100,7 @@ bool checkCollisionCircleRec(Vector2 circle, float radius, struct Rectangle rect
     return (dx * dx + dy * dy) <= (radius * radius);
 };
 
-bool checkCollisionCircles(Vector2 center1, float radius1, Vector2 center2, float radius2){
+bool Game::checkCollisionCircles(Vector2 center1, float radius1, Vector2 center2, float radius2){
     float dx = center1.x - center2.x;
     float dy = center1.y - center2.y;
 
@@ -108,6 +109,18 @@ bool checkCollisionCircles(Vector2 center1, float radius1, Vector2 center2, floa
 
     return distanceSquared <= radiusSum * radiusSum;
 };
+
+bool CheckCollisionRecs(Rect rec1, Rect rec2)
+{
+    bool collision = false;
+
+    if ((rec1.coordinate.x < (rec2.coordinate.x + rec2.width) && (rec1.coordinate.x + rec1.width) > rec2.coordinate.x) &&
+        (rec1.coordinate.y < (rec2.coordinate.y + rec2.height) && (rec1.coordinate.y + rec1.height) > rec2.coordinate.y)){
+            collision = true;
+        }
+
+    return collision;
+}
 
 bool Game::wallCollisionDetected(Vector2 pos, float radius)
 {
@@ -119,6 +132,18 @@ bool Game::wallCollisionDetected(Vector2 pos, float radius)
     }
 
     // Check pacman collision with 
+    return false;
+}
+
+bool Game::wallCollisionDetected(Rect pos)
+{
+    for (auto &wall : walls)
+    {
+        if (CheckCollisionRecs(pos, wall))
+        {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -140,7 +165,7 @@ void Game::checkPacmanPelletCollision(){
                 pacman.coordinate,
                 pacman.radius,
                 pelletCenter,
-                radius
+                it->radius
             );
 
             // Remove pellets if the pacman collides with the pellets.
@@ -191,21 +216,21 @@ void Game::simulateGame(float dt){
     for (int i = 0; i < ghosts.size(); i++)
     {
         // Update the x position if no collision detected.
-        Rectangle testPosition = ghosts[i].coordinate;
-        testPosition.x += generateDirection().x * ghosts[i].speed * dt;
+        Rect testPosition = ghosts[i].hitbox;
+        testPosition.coordinate.x += generateDirection().x * ghosts[i].speed * dt;
 
-        if (!wallCollisionDetected(testPosition, pacmans[i].radius))
+        if (!wallCollisionDetected(testPosition))
         {
-            ghosts[i].coordinate.x += testPosition.x;
+            ghosts[i].hitbox.coordinate.x += testPosition.coordinate.x;
         }
 
         // Update the y position if no collision detected.
-        testPosition = ghosts[i].coordinate;
-        testPosition.y += generateDirection().y * ghosts[i].speed * dt;
+        testPosition = ghosts[i].hitbox;
+        testPosition.coordinate.y += generateDirection().y * ghosts[i].speed * dt;
 
-        if (!wallCollisionDetected(testPosition, pacmans[i].radius))
+        if (!wallCollisionDetected(testPosition))
         {
-            ghosts[i].coordinate.y += testPosition.y;
+            ghosts[i].hitbox.coordinate.y += testPosition.coordinate.y;
         }
     }
 }
@@ -236,7 +261,7 @@ void Game::run(){
     bool running = true;
 
     // Start
-    start(uint16_t port, size_t maxClients, size_t channels)
+    server.start(3000);
 
     // Set time
     using clock = std::chrono::steady_clock;
@@ -259,7 +284,7 @@ void Game::run(){
         accumulator += frameTime; // We want to accumulate the frametime until it hits the tick time.
 
         // Extract the data from 
-        receivePackets(players);        
+        server.receivePackets(pacmans);
 
         // Simulate the tick
         while(accumulator >= TICK_TIME){

@@ -59,7 +59,3 @@ float Deserialization::readFloat(){
 bool Deserialization::readBool(){
     return true ? readUInt8() : false;
 }
-
-std::string Deserialization::readString(){
-
-}

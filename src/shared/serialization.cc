@@ -33,9 +33,6 @@ void Serialization::writeBool(bool value){
     writeUInt8(value ? 1:0);
 }
 
-void Serialization::writeString(const std::string& value){
-}
-
 const std::vector<uint8_t>& Serialization::getSerializedData() const{
     return buffer;
 }

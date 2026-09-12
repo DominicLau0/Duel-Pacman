@@ -1,8 +1,12 @@
 #ifndef CLIENT_HH
 #define CLIENT_HH
 
+#include <cstdint>
 #include <enet/enet.h>
 #include <string>
+#include <vector>
+
+#include "protocol.hh"
 
 class Client{
     public:

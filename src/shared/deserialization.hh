@@ -2,6 +2,7 @@
 #define DESERIALIZATION_HH
 
 #include <cstdint>
+#include <cstring>
 
 #include <vector>
 #include <string>
@@ -17,7 +18,6 @@ class Deserialization{
         int32_t readInt32();
         float readFloat();
         bool readBool();
-        std::string readString();
 
         bool hasBytes(size_t count) const;
 

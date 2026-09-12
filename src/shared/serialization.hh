@@ -2,6 +2,7 @@
 #define SERIALIZATION_HH
 
 #include <cstdint>
+#include <cstring>
 
 #include <vector>
 #include <string>
@@ -14,7 +15,6 @@ class Serialization{
         void writeInt32(int32_t);
         void writeFloat(float);
         void writeBool(bool);
-        void writeString(const std::string&);
 
         const std::vector<uint8_t>& getSerializedData() const;
     private:

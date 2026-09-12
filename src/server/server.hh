@@ -6,7 +6,8 @@
 #include "serialization.hh"
 #include "deserialization.hh"
 
-#include "game.hh"
+#include "gameobject.hh"
+
 #include <vector>
 
 class Server{

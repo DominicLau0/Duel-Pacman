@@ -318,16 +318,12 @@ void Game::run()
             input.dy = 0;
         }
 
-        input.id = CLIENT_ID;
-
         clientNetwork.sendInputPacket(input);
 
         // Poll data from server
         clientNetwork.poll();
 
-        for(){
-            
-        }
+        
 
         // Update
         

@@ -93,7 +93,7 @@ void Server::receivePackets(std::vector<Pacman>& pacmans){
 
     while(enet_host_service(server, &event, 0) > 0){
         switch(event.type){
-            case ENET_EVENT_TYPE_CONNECT:
+            case ENET_EVENT_TYPE_CONNECT: {
                 // Output client details
                 printf("A new client connected from %x:%u.\n",  event.peer->address.host, event.peer->address.port);
 
@@ -104,7 +104,7 @@ void Server::receivePackets(std::vector<Pacman>& pacmans){
 
                 for(auto& pacman: pacmans){
                     if(pacman.id == 0){
-                        pacman.id == playerId;
+                        pacman.id = playerId;
                         break;
                     }
                 }
@@ -116,10 +116,11 @@ void Server::receivePackets(std::vector<Pacman>& pacmans){
                 // Broadcast to all pacmans, so that we can start the game.
 
                 break;
+            }
 
-            case ENET_EVENT_TYPE_RECEIVE:
+            case ENET_EVENT_TYPE_RECEIVE: {
                 // Output client packet
-                printf("A packet of length %lu containing %s was received from %s on channel %u.\n",
+                printf("A packet of length %llu containing %s was received from %p on channel %u.\n",
                         event.packet->dataLength,
                         event.packet->data,
                         event.peer->data,
@@ -133,14 +134,18 @@ void Server::receivePackets(std::vector<Pacman>& pacmans){
                 enet_packet_destroy(event.packet);
                 break;
 
-            case ENET_EVENT_TYPE_DISCONNECT:
-                printf("%s Disconnected.\n", event.peer->data);
+            }
+
+            case ENET_EVENT_TYPE_DISCONNECT: {
+                printf("%p Disconnected.\n", event.peer->data);
                 event.peer->data = nullptr;
 
                 break;
+            }
             
-            case ENET_EVENT_TYPE_NONE:
+            case ENET_EVENT_TYPE_NONE: {
                 break;
+            }
         }
     }
 }
@@ -165,7 +170,7 @@ void Server::sendPackets(std::vector<Pacman>& pacmans, std::vector<Pellet>& pell
     serializer.writeUInt32(pacmans.size());
 
     for(auto& pacman: pacmans){
-        serializer.writeUInt32(pacman.id);
+        serializer.writeUInt8(pacman.id);
         serializer.writeFloat(pacman.coordinate.x);
         serializer.writeFloat(pacman.coordinate.y);
         serializer.writeInt32(pacman.score);
@@ -184,8 +189,8 @@ void Server::sendPackets(std::vector<Pacman>& pacmans, std::vector<Pellet>& pell
     serializer.writeUInt32(ghosts.size());
 
     for(auto& ghost: ghosts){
-        serializer.writeFloat(ghost.coordinate.x);
-        serializer.writeFloat(ghost.coordinate.y);
+        serializer.writeFloat(ghost.hitbox.coordinate.x);
+        serializer.writeFloat(ghost.hitbox.coordinate.y);
     }
 
     const std::vector<uint8_t>& data = serializer.getSerializedData();

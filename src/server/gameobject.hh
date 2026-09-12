@@ -1,7 +1,6 @@
 #ifndef GAMEOBJECT_HH
 #define GAMEOBJECT_HH
 
-#define NOMINMAX
 #include <enet/enet.h>
 #include <cstdint>
 #include <algorithm>
@@ -13,7 +12,7 @@ struct Vector2
     float y;
 };
 
-struct Rectangle
+struct Rect
 {
     Vector2 coordinate = {0.0f, 0.0f};
     float width;
@@ -38,7 +37,7 @@ struct Pacman
 
 struct Ghost
 {
-    Vector2 coordinate = {0.0f, 0.0f};
+    Rect hitbox = {{0.0f, 0.0f}, 14, 14};
     Vector2 direction = {0.0f, 0.0f};
 
     float speed = 100;
@@ -47,15 +46,9 @@ struct Ghost
 struct Pellet
 {
     Vector2 coordinate = {0.0f, 0.0f};
+    float radius = 2;
+    
     bool eaten = false;
-};
-
-struct Wall
-{
-    float x;
-    float y;
-    float width;
-    float height;
 };
 
 #endif
