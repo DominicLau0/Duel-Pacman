@@ -4,8 +4,8 @@
 Pacman game in progress
 
 # Installation
-`make` to setup the game.exe file.
+`cmake --build build` to setup the game.exe file.
 
-`./game.exe` to execute the game.
+`.\build\Debug\client.exe` to run the client.
 
-`make clean` to remove the game.exe file
+`.\build\Debug\server.exe` to run the server.
