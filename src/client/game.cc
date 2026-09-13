@@ -28,6 +28,7 @@ Game::Game()
         "111111111111111111111"};
 
     // Initialize and create pacman objects.
+
     for (int i = 0; i < pacman_amount; i++)
     {
         pacmans.push_back(Pacman());
@@ -107,25 +108,13 @@ void Game::create_map()
                                          color));
                 }
             }
-            else if (tile == 'X')
+            else if (tile == 'X' || tile == 'O' || tile == 'G' || tile == 'P')
             {
                 // Set the location of the ghosts
-                ghosts[0].setCoordinate({x, y});
-            }
-            else if (tile == 'O')
-            {
-                // Set the location of the ghosts
-                ghosts[1].setCoordinate({x, y});
-            }
-            else if (tile == 'G')
-            {
-                // Set the location of the ghosts
-                ghosts[2].setCoordinate({x, y});
-            }
-            else if (tile == 'P')
-            {
-                // Set the location of the ghosts
-                ghosts[3].setCoordinate({x, y});
+                Rectangle source = Rectangle{spriteStartingX, spriteStartingY + ((spriteSize + 2) * ghosts.size()), spriteSize, spriteSize};
+                Rectangle dest = Rectangle{x, y, spriteSize, spriteSize};
+                
+                ghosts.push_back(Ghost(texture, source, dest));
             }
             else if (tile == 'B')
             {
@@ -256,17 +245,6 @@ void Game::draw_scoreboard(){
         30,
         RED);
 }
-
-void Game::initializeGhosts(){
-    for (int i = 0; i < ghost_amount; i++)
-    {
-        Rectangle source = Rectangle{spriteStartingX, spriteStartingY + ((spriteSize + 2) * i), spriteSize, spriteSize};
-        Rectangle dest = Rectangle{ghosts[i].getCoordinate().x, ghosts[i].getCoordinate().y, spriteSize, spriteSize};
-        
-        ghosts.push_back(Ghost(texture, source, dest));
-    }
-}
-
 void Game::run()
 {
     /**
@@ -290,7 +268,6 @@ void Game::run()
     InitWindow(screenWidth, screenHeight, "Duel Pacman");
 
     texture = LoadTexture("sprites/sprites.png");
-    initializeGhosts();
 
     while (!WindowShouldClose())
     {
@@ -322,8 +299,6 @@ void Game::run()
 
         // Poll data from server
         clientNetwork.poll();
-
-        
 
         // Update
         

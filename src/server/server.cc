@@ -55,7 +55,7 @@ void Server::readPacket(const ENetPacket* packet, uint8_t playerId, std::vector<
     Deserialization deserializer(packet->data, packet->dataLength);
 
     // Read message type
-    int32_t messageType = deserializer.readInt32();
+    uint8_t messageType = deserializer.readUInt8();
 
     MessageType type = static_cast<MessageType>(messageType);
 

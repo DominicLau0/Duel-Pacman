@@ -12,7 +12,7 @@
     #define NOUSER  // Prevents winuser.h from defining CloseWindow(), ShowCursor(), etc.
 #endif
 
-#include "../../include/raylib.h"
+#include <raylib.h>
 #include "pellet.hh"
 #include "wall.hh"
 #include "pacman.hh"
@@ -42,8 +42,6 @@ class Game
         bool wallCollisionDetected(Vector2, float);
         bool wallCollisionDetected(Rectangle pos);
         void checkPacmanPelletCollision();
-
-        void initializeGhosts();
 
     private:
         uint8_t pacmanId = 0;

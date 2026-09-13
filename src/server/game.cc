@@ -35,6 +35,10 @@ Game::Game(){
     create_map();
 }
 
+Game::~Game(){
+    
+}
+
 void Game::create_map()
 {
     // Creates the layout of the pacman game.

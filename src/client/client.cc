@@ -149,7 +149,7 @@ void Client::readPacket(const ENetPacket* packet){
     Deserialization deserializer(packet->data, packet->dataLength);
 
     // Read message type
-    int32_t messageType = deserializer.readUInt8();
+    uint8_t messageType = deserializer.readUInt8();
 
     MessageType type = static_cast<MessageType>(messageType);
 

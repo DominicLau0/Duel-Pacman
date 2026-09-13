@@ -1,7 +1,7 @@
 #ifndef GHOST_HH
 #define GHOST_HH
 
-#include "../../include/raylib.h"
+#include <raylib.h>
 #include "sprite.hh"
 #include "string"
 

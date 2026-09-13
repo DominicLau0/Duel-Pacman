@@ -9,6 +9,11 @@ Deserialization::Deserialization(const uint8_t* data, size_t data_size)
 
 }
 
+Deserialization::~Deserialization()
+{
+
+}
+
 bool Deserialization::hasBytes(size_t count) const{
     return position + count <= size;
 }
