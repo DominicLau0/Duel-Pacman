@@ -245,21 +245,28 @@ void Game::draw_scoreboard(){
         30,
         RED);
 }
+
+void Game::updateGame(std::vector<PlayerState> playersState, std::vector<PelletState>pelletsState, std::vector<GhostState>ghostsState){
+    // Update pacman/players coordinate
+    for(int i=0; i<playersState.size(); i++){
+        pacmans[i].setCoordinate({playersState[i].x, playersState[i].y});
+        pacmans[i].setScore(playersState[i].score);
+    }
+
+    // Update pellets coordinate
+    for(int i=0; i<pelletsState.size(); i++){
+        
+    }
+
+    // Update ghosts coordinate
+    for(int i=0; i<ghostsState.size(); i++){
+
+    }
+}
+
 void Game::run()
 {
-    /**
-     * Run the program
-     * Return true if the colors are the same
-     *
-     * c1 represents the first color
-     * c2 represents the second color
-     *
-     * Stores the created walls in the vector wall.
-     *
-     * @param none
-     * @return True if the colors are the same, else False.
-     */
-
+    // Connect to the server
     if(!clientNetwork.connect("127.0.0.1", 3000)){
         return;
     }
@@ -269,6 +276,7 @@ void Game::run()
 
     texture = LoadTexture("sprites/sprites.png");
 
+    // Run game
     while (!WindowShouldClose())
     {
         // Send data to server
@@ -278,30 +286,36 @@ void Game::run()
         {
             input.dx = 0;
             input.dy = -1;
+
+            clientNetwork.sendInputPacket(input);
         }
         else if (IsKeyPressed(KEY_S))
         {
             input.dx = 0;
             input.dy = 1;
+
+            clientNetwork.sendInputPacket(input);
         }
         else if (IsKeyPressed(KEY_A))
         {
             input.dx = -1;
             input.dy = 0;
+
+            clientNetwork.sendInputPacket(input);
         }
         else if (IsKeyPressed(KEY_D))
         {
             input.dx = 1;
             input.dy = 0;
-        }
 
-        clientNetwork.sendInputPacket(input);
+            clientNetwork.sendInputPacket(input);
+        }
 
         // Poll data from server
         clientNetwork.poll();
 
-        // Update
-        
+        // Update the positions of ghosts, players. and pellets
+        updateGame(clientNetwork.getPlayers(), clientNetwork.getPellets(), clientNetwork.getGhosts());
 
         // Render
 

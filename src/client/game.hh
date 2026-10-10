@@ -43,6 +43,8 @@ class Game
         bool wallCollisionDetected(Rectangle pos);
         void checkPacmanPelletCollision();
 
+        void updateGame(std::vector<PlayerState>, std::vector<PelletState>, std::vector<GhostState>);
+
     private:
         uint8_t pacmanId = 0;
 

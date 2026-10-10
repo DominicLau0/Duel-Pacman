@@ -213,3 +213,11 @@ void Client::readPacket(const ENetPacket* packet){
 const std::vector<PlayerState>& Client::getPlayers() const{
     return players;
 }
+
+const std::vector<PelletState>& Client::getPellets() const{
+    return pellets;
+}
+
+const std::vector<GhostState>& Client::getGhosts() const{
+    return ghosts;
+}

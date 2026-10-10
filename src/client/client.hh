@@ -17,6 +17,9 @@ class Client{
         void sendInputPacket(const PlayerInput&);
 
         const std::vector<PlayerState>& getPlayers() const;
+        const std::vector<PelletState>& getPellets() const;
+        const std::vector<GhostState>& getGhosts() const;
+
 
     private:
         uint8_t pacmanId = 0;
